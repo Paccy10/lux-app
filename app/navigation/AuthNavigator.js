@@ -10,7 +10,6 @@ import LoginScreen from '../screens/Auth/Login';
 const Stack = createStackNavigator();
 
 const AuthNavigator = () => {
-  delete defaultNavigationOptions.headerLeft;
   return (
     <Stack.Navigator screenOptions={defaultNavigationOptions}>
       <Stack.Screen

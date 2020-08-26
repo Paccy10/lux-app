@@ -1,6 +1,3 @@
-import React from 'react';
-
-import DrawerToggler from '../components/UI/DrawerToggler';
 import colors from '../config/colors';
 
 export default {
@@ -9,5 +6,4 @@ export default {
   },
   headerTintColor: colors.white,
   headerBackTitle: 'Back',
-  headerLeft: () => <DrawerToggler />,
 };
