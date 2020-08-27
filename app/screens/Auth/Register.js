@@ -1,22 +1,9 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Image,
-  View,
-  ScrollView,
-  Platform,
-  ToastAndroid,
-  Alert,
-} from 'react-native';
+import { StyleSheet, Image, View, ScrollView, Alert } from 'react-native';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
-import {
-  AppForm,
-  AppFormField,
-  AppSubmitButton,
-  ErrorMessage,
-} from '../../components/forms';
+import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
 import { register } from '../../store/actions/auth';
 
 const validationSchema = Yup.object().shape({
@@ -33,11 +20,11 @@ const Register = ({ register, loading, authError }) => {
   };
 
   if (authError) {
-    alert(authError);
+    Alert.alert('Error', authError);
   }
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps='handled'>
       <View style={styles.container}>
         <Image
           style={styles.image}
