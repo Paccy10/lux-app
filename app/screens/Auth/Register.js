@@ -1,10 +1,41 @@
 import React from 'react';
-import { StyleSheet, Image, View, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  View,
+  ScrollView,
+  Platform,
+  ToastAndroid,
+  Alert,
+} from 'react-native';
+import * as Yup from 'yup';
+import { connect } from 'react-redux';
 
-import AppTextInput from '../../components/UI/AppTextInput';
-import AppButton from '../../components/UI/AppButton';
+import {
+  AppForm,
+  AppFormField,
+  AppSubmitButton,
+  ErrorMessage,
+} from '../../components/forms';
+import { register } from '../../store/actions/auth';
 
-const Register = () => {
+const validationSchema = Yup.object().shape({
+  email: Yup.string().required().email().label('Email'),
+  password: Yup.string().required().min(6).label('Password'),
+  confirmPassword: Yup.string()
+    .required('Confirm the entered password')
+    .oneOf([Yup.ref('password'), null], 'Passwords do not match'),
+});
+
+const Register = ({ register, loading, authError }) => {
+  const handleSubmit = (userInfo) => {
+    register(userInfo);
+  };
+
+  if (authError) {
+    alert(authError);
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -13,38 +44,46 @@ const Register = () => {
           source={require('../../assets/logo-white.png')}
         />
         <View style={styles.formContainer}>
-          <AppTextInput
-            name='email'
-            icon='email'
-            placeholder='E-mail Address'
-            autoCorrect={false}
-            autoCapitalize='none'
-            keyboardType='email-address'
-            textContentType='emailAddress'
-          />
-          <AppTextInput
-            icon='lock'
-            name='password'
-            placeholder='Password'
-            autoCapitalize='none'
-            autoCorrect={false}
-            textContentType='password'
-            secureTextEntry
-          />
-          <AppTextInput
-            icon='lock'
-            name='confirmPassword'
-            placeholder='Confirm Password'
-            autoCapitalize='none'
-            autoCorrect={false}
-            textContentType='password'
-            secureTextEntry
-          />
-          <AppButton
-            title='Create Account'
-            color='primary'
-            style={styles.button}
-          />
+          <AppForm
+            initialValues={{ email: '', password: '', confirmPassword: '' }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            <AppFormField
+              name='email'
+              icon='email'
+              placeholder='E-mail Address'
+              autoCorrect={false}
+              autoCapitalize='none'
+              keyboardType='email-address'
+              textContentType='emailAddress'
+            />
+            <AppFormField
+              icon='lock'
+              name='password'
+              placeholder='Password'
+              autoCapitalize='none'
+              autoCorrect={false}
+              textContentType='password'
+              secureTextEntry
+            />
+            <AppFormField
+              icon='lock'
+              name='confirmPassword'
+              placeholder='Confirm Password'
+              autoCapitalize='none'
+              autoCorrect={false}
+              textContentType='password'
+              secureTextEntry
+            />
+            <AppSubmitButton
+              title='Create Account'
+              color='primary'
+              style={styles.button}
+              loading={loading}
+              disabled={loading}
+            />
+          </AppForm>
         </View>
       </View>
     </ScrollView>
@@ -68,4 +107,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Register;
+const mapStateToProps = (state) => ({
+  loading: state.auth.loading,
+  authError: state.auth.authError,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  register: (newUser) => dispatch(register(newUser)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

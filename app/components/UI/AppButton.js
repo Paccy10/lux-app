@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements';
 
 import colors from '../../config/colors';
 
-const AppButton = ({ title, color, style, onPress }) => {
+const AppButton = ({ title, color, style, onPress, ...otherProps }) => {
   return (
     <Button
       title={title}
@@ -16,6 +16,8 @@ const AppButton = ({ title, color, style, onPress }) => {
       }}
       containerStyle={{ ...styles.container, ...style }}
       onPress={onPress}
+      loadingProps={{ color: colors.primary }}
+      {...otherProps}
     />
   );
 };
