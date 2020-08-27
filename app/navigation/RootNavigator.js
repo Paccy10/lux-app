@@ -13,23 +13,21 @@ import defaultOptions from './defaultOptions';
 const Stack = createStackNavigator();
 
 const rootNavigator = ({ auth, profile }) => {
-  if (!isLoaded(auth)) {
+  if (!isLoaded(auth) || !isLoaded(profile)) {
     return <AppLoading />;
   }
 
   let route = null;
   if (!isEmpty(auth)) {
-    if (profile.isEmpty) {
-      route = (
-        <Stack.Screen
-          name={routes.SETUP}
-          component={SetupScreen}
-          options={{ headerShown: true }}
-        />
-      );
-    } else {
-      route = <Stack.Screen name='Main' component={MainNavigator} />;
-    }
+    route = isEmpty(profile) ? (
+      <Stack.Screen
+        name={routes.SETUP}
+        component={SetupScreen}
+        options={{ headerShown: true, headerTitle: 'Setup Profile' }}
+      />
+    ) : (
+      <Stack.Screen name='Main' component={MainNavigator} />
+    );
   } else {
     route = <Stack.Screen name='Auth' component={AuthNavigator} />;
   }

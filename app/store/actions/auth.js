@@ -37,3 +37,28 @@ export const logout = () => {
       });
   };
 };
+
+export const createUserProfile = (userData) => {
+  return (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.SETUP_PROFILE_START });
+    const firebase = getFirebase();
+    const { uid } = getState().firebase.auth;
+
+    firebase
+      .database()
+      .ref(`users/${uid}`)
+      .update({
+        username: userData.username,
+        fullname: userData.fullname,
+        country: userData.country,
+        status: 'Hey there, I am using Lux App!',
+        gender: null,
+        dateOfBirth: null,
+        relationshipStatus: null,
+      })
+      .then(() => dispatch({ type: actionTypes.SETUP_PROFILE_SUCCESS }))
+      .catch((error) =>
+        dispatch({ type: actionTypes.SETUP_PROFILE_FAIL, error })
+      );
+  };
+};
