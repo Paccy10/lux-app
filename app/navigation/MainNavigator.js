@@ -99,15 +99,6 @@ const MainNavigator = () => {
           ),
         }}
       />
-      <Drawer.Screen
-        name='Logout'
-        component={FeedNavigator}
-        options={{
-          drawerIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name='logout' color={color} size={size} />
-          ),
-        }}
-      />
     </Drawer.Navigator>
   );
 };
