@@ -1,21 +1,21 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useNavigation } from '@react-navigation/native';
 
 import AppHeaderButton from './AppHeaderButton';
+import routes from '../../navigation/routes';
 
-const DrawerToggler = () => {
+const NewPostButton = () => {
   const navigation = useNavigation();
   return (
     <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
       <Item
-        title='Menu'
-        iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
-        onPress={() => navigation.toggleDrawer()}
+        title='NewPost'
+        iconName='newspaper-plus'
+        onPress={() => navigation.navigate(routes.NEW_POST)}
       />
     </HeaderButtons>
   );
 };
 
-export default DrawerToggler;
+export default NewPostButton;

@@ -3,4 +3,6 @@ export default Object.freeze({
   REGISTER: 'Register',
   LOGIN: 'Login',
   SETUP: 'Setup',
+  HOME: 'Home',
+  NEW_POST: 'New Post',
 });

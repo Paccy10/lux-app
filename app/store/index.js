@@ -4,10 +4,12 @@ import { getFirebase, firebaseReducer } from 'react-redux-firebase';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import authReducer from './reducers/auth';
+import postReducer from './reducers/post';
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
   auth: authReducer,
+  post: postReducer,
 });
 
 const store = createStore(

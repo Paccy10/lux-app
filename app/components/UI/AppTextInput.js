@@ -7,7 +7,13 @@ import defaultStyles from '../../config/styles';
 
 const AppTextInput = ({ icon, width = '100%', ...otherProps }) => {
   return (
-    <View style={[styles.container, { width }]}>
+    <View
+      style={[
+        styles.container,
+        { width },
+        { display: otherProps.hidden ? 'none' : 'flex' },
+      ]}
+    >
       {icon && (
         <MaterialCommunityIcons
           name={icon}

@@ -1,29 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 
 import colors from '../../config/colors';
+import { verifyPermissions } from '../../utils/imageUpload';
 
 const AppProfileImagePicker = (props) => {
   const [pickedImage, setPickedImage] = useState();
-
-  const verifyPermissions = async () => {
-    const result = await Permissions.askAsync(
-      Permissions.CAMERA,
-      Permissions.CAMERA_ROLL
-    );
-    if (result.status !== 'granted') {
-      Alert.alert(
-        'Permission Denied',
-        'You need to grant camera permissions to take an image',
-        [{ text: 'ok' }]
-      );
-      return false;
-    }
-    return true;
-  };
 
   const takeImageHandler = async () => {
     const hasPermission = await verifyPermissions();

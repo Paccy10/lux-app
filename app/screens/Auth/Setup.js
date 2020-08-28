@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
-import AppProfileImagePicker from '../../components/UI/AppProfileImagePicker';
+import ProfileImagePicker from '../../components/UI/ProfileImagePicker';
 import { setUserProfile } from '../../store/actions/auth';
 
 const validationSchema = Yup.object().shape({
@@ -32,7 +32,7 @@ const Setup = ({ createUserProfile, loading, authError }) => {
   return (
     <ScrollView keyboardShouldPersistTaps='handled'>
       <View style={styles.container}>
-        <AppProfileImagePicker onImageTaken={imageTakenHandler} />
+        <ProfileImagePicker onImageTaken={imageTakenHandler} />
         <View>
           <AppForm
             initialValues={{ username: '', fullname: '', country: '' }}
