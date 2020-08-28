@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Image, ScrollView, Alert } from 'react-native';
-
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
-import { createUserProfile } from '../../store/actions/auth';
+import AppProfileImagePicker from '../../components/UI/AppProfileImagePicker';
+import { setUserProfile } from '../../store/actions/auth';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required().label('Username'),
@@ -16,8 +16,14 @@ const validationSchema = Yup.object().shape({
 import colors from '../../config/colors';
 
 const Setup = ({ createUserProfile, loading, authError }) => {
+  const [image, setImage] = useState();
   const handleSubmit = (userData) => {
+    userData.imageUri = image;
     createUserProfile(userData);
+  };
+
+  const imageTakenHandler = (imagePath) => {
+    setImage(imagePath);
   };
 
   if (authError) {
@@ -26,10 +32,7 @@ const Setup = ({ createUserProfile, loading, authError }) => {
   return (
     <ScrollView keyboardShouldPersistTaps='handled'>
       <View style={styles.container}>
-        <Image
-          style={styles.image}
-          source={require('../../assets/profile.png')}
-        />
+        <AppProfileImagePicker onImageTaken={imageTakenHandler} />
         <View>
           <AppForm
             initialValues={{ username: '', fullname: '', country: '' }}
@@ -99,7 +102,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  createUserProfile: (userData) => dispatch(createUserProfile(userData)),
+  createUserProfile: (userData) => dispatch(setUserProfile(userData)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Setup);

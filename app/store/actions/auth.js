@@ -1,4 +1,5 @@
 import * as actionTypes from './types';
+import { uploadProfileImage } from '../../utils/imageUpload';
 
 export const register = (newUser) => {
   return (dispatch, getState, { getFirebase }) => {
@@ -38,11 +39,16 @@ export const logout = () => {
   };
 };
 
-export const createUserProfile = (userData) => {
-  return (dispatch, getState, { getFirebase }) => {
+export const setUserProfile = (userData) => {
+  return async (dispatch, getState, { getFirebase }) => {
     dispatch({ type: actionTypes.SETUP_PROFILE_START });
     const firebase = getFirebase();
     const { uid } = getState().firebase.auth;
+    let imageUrl = '';
+    if (userData.imageUri) {
+      const uploadResponse = await uploadProfileImage(userData.imageUri, uid);
+      imageUrl = await uploadResponse.ref.getDownloadURL();
+    }
 
     firebase
       .database()
@@ -52,9 +58,10 @@ export const createUserProfile = (userData) => {
         fullname: userData.fullname,
         country: userData.country,
         status: 'Hey there, I am using Lux App!',
-        gender: null,
-        dateOfBirth: null,
-        relationshipStatus: null,
+        gender: 'none',
+        dateOfBirth: 'none',
+        relationshipStatus: 'none',
+        profileImage: imageUrl,
       })
       .then(() => dispatch({ type: actionTypes.SETUP_PROFILE_SUCCESS }))
       .catch((error) =>
