@@ -33,7 +33,7 @@ const DrawerContent = (props) => {
           />
           {isImageLoading && (
             <ActivityIndicator
-              size={23}
+              size='small'
               color={colors.primary}
               style={styles.imageLoader}
             />

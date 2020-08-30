@@ -12,7 +12,7 @@ export const createPost = (postData) => {
     const user = { fullname, profileImage };
     const firebase = getFirebase();
 
-    firebase
+    return firebase
       .database()
       .ref('posts')
       .push()
@@ -26,6 +26,32 @@ export const createPost = (postData) => {
       .then(() => dispatch({ type: actionTypes.CREATE_POST_SUCCESS }))
       .catch((error) =>
         dispatch({ type: actionTypes.CREATE_POST_FAIL, error })
+      );
+  };
+};
+
+export const fetchPosts = () => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.FETCH_POSTS_START });
+    const firebase = getFirebase();
+    return firebase
+      .database()
+      .ref('posts')
+      .once('value')
+      .then((snapshot) => {
+        const posts = [];
+        snapshot.forEach((childSnapshot) => {
+          const post = childSnapshot.val();
+          post.key = childSnapshot.key;
+          posts.unshift(post);
+        });
+        dispatch({
+          type: actionTypes.FETCH_POSTS_SUCCESS,
+          posts,
+        });
+      })
+      .catch((error) =>
+        dispatch({ type: actionTypes.FETCH_POSTS_FAIL, error })
       );
   };
 };

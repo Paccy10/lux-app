@@ -12,8 +12,9 @@ const validationSchema = Yup.object().shape({
   description: Yup.string().required().label('Description'),
 });
 
-const NewPost = ({ loading, error, createPost, navigation }) => {
+const NewPost = ({ error, createPost, navigation }) => {
   const [image, setImage] = useState();
+  const [loading, setLoading] = useState(false);
 
   const imageTakenHandler = (imagePath) => {
     setImage(imagePath);
@@ -24,8 +25,10 @@ const NewPost = ({ loading, error, createPost, navigation }) => {
       Alert.alert('Error', 'The post image is required');
       return;
     }
+    setLoading(true);
     postData.imageUri = image;
     await createPost(postData);
+    setLoading(false);
     navigation.navigate(routes.HOME);
   };
 
