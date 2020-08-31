@@ -2,6 +2,7 @@ import * as actionTypes from '../actions/types';
 
 const initialState = {
   loading: false,
+  googleLoading: false,
   authError: null,
 };
 
@@ -31,6 +32,27 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        authError: action.error.message,
+      };
+
+    case actionTypes.GOOGLE_LOGIN_START:
+      return {
+        ...state,
+        googleLoading: true,
+        authError: null,
+      };
+
+    case actionTypes.GOOGLE_LOGIN_SUCCESS:
+      return {
+        ...state,
+        googleLoading: false,
+        authError: null,
+      };
+
+    case actionTypes.GOOGLE_LOGIN_FAIL:
+      return {
+        ...state,
+        googleLoading: false,
         authError: action.error.message,
       };
 

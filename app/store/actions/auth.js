@@ -1,5 +1,8 @@
+import * as Google from 'expo-google-app-auth';
+
 import * as actionTypes from './types';
 import { uploadProfileImage } from '../../utils/imageUpload';
+import { IOS_CLIENT_ID, ANDROID_CLIENT_ID } from '@env';
 
 export const register = (newUser) => {
   return (dispatch, getState, { getFirebase }) => {
@@ -23,7 +26,7 @@ export const login = (credentials) => {
       .auth()
       .signInWithEmailAndPassword(credentials.email, credentials.password)
       .then(() => dispatch({ type: actionTypes.LOGIN_SUCCESS }))
-      .catch((error) => dispatch({ type: actionTypes.REGISTER_FAIL, error }));
+      .catch((error) => dispatch({ type: actionTypes.LOGIN_FAIL, error }));
   };
 };
 
@@ -67,5 +70,34 @@ export const setUserProfile = (userData) => {
       .catch((error) =>
         dispatch({ type: actionTypes.SETUP_PROFILE_FAIL, error })
       );
+  };
+};
+
+export const googleLogin = () => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.GOOGLE_LOGIN_START });
+    try {
+      const result = await Google.logInAsync({
+        androidClientId: ANDROID_CLIENT_ID,
+        iosClientId: IOS_CLIENT_ID,
+        scopes: ['profile', 'email'],
+      });
+      if (result.type === 'success') {
+        const firebase = getFirebase();
+        const credentials = firebase.auth.GoogleAuthProvider.credential(
+          result.idToken,
+          result.accessToken
+        );
+        return firebase
+          .auth()
+          .signInWithCredential(credentials)
+          .then(() => dispatch({ type: actionTypes.GOOGLE_LOGIN_SUCCESS }))
+          .catch((err) =>
+            dispatch({ type: actionTypes.GOOGLE_LOGIN_FAIL, error: err })
+          );
+      }
+    } catch (error) {
+      dispatch({ type: actionTypes.GOOGLE_LOGIN_FAIL, error });
+    }
   };
 };

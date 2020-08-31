@@ -4,7 +4,9 @@ import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
-import { register } from '../../store/actions/auth';
+import GoogleButton from '../../components/UI/GoogleButton';
+import FacebookButton from '../../components/UI/FacebookButton';
+import { register, googleLogin } from '../../store/actions/auth';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label('Email'),
@@ -14,7 +16,13 @@ const validationSchema = Yup.object().shape({
     .oneOf([Yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const Register = ({ register, loading, authError }) => {
+const Register = ({
+  register,
+  loading,
+  authError,
+  googleLogin,
+  googleLoading,
+}) => {
   const handleSubmit = (userInfo) => {
     register(userInfo);
   };
@@ -72,6 +80,15 @@ const Register = ({ register, loading, authError }) => {
             />
           </AppForm>
         </View>
+        <View style={styles.socialButtons}>
+          <GoogleButton
+            style={styles.button}
+            onPress={googleLogin}
+            loading={googleLoading}
+            disabled={googleLoading}
+          />
+          <FacebookButton style={styles.button} />
+        </View>
       </View>
     </ScrollView>
   );
@@ -92,15 +109,21 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
   },
+  socialButtons: {
+    marginTop: 20,
+    width: '100%',
+  },
 });
 
 const mapStateToProps = (state) => ({
   loading: state.auth.loading,
+  googleLoading: state.auth.googleLoading,
   authError: state.auth.authError,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   register: (newUser) => dispatch(register(newUser)),
+  googleLogin: () => dispatch(googleLogin()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

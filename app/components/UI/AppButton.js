@@ -16,7 +16,7 @@ const AppButton = ({ title, color, style, onPress, ...otherProps }) => {
       }}
       containerStyle={{ ...styles.container, ...style }}
       onPress={onPress}
-      loadingProps={{ color: colors.primary }}
+      loadingProps={{ color: colors[color] }}
       {...otherProps}
     />
   );

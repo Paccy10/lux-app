@@ -4,14 +4,16 @@ import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
-import { login } from '../../store/actions/auth';
+import GoogleButton from '../../components/UI/GoogleButton';
+import FacebookButton from '../../components/UI/FacebookButton';
+import { login, googleLogin } from '../../store/actions/auth';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label('Email'),
   password: Yup.string().required().min(6).label('Password'),
 });
 
-const Login = ({ login, loading, authError }) => {
+const Login = ({ login, loading, authError, googleLogin, googleLoading }) => {
   const handleSubmit = (credentials) => {
     login(credentials);
   };
@@ -60,6 +62,15 @@ const Login = ({ login, loading, authError }) => {
             />
           </AppForm>
         </View>
+        <View style={styles.socialButtons}>
+          <GoogleButton
+            style={styles.button}
+            onPress={googleLogin}
+            loading={googleLoading}
+            disabled={googleLoading}
+          />
+          <FacebookButton style={styles.button} />
+        </View>
       </View>
     </ScrollView>
   );
@@ -80,15 +91,21 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
   },
+  socialButtons: {
+    marginTop: 20,
+    width: '100%',
+  },
 });
 
 const mapStateToProps = (state) => ({
   loading: state.auth.loading,
+  googleLoading: state.auth.googleLoading,
   authError: state.auth.authError,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   login: (credentials) => dispatch(login(credentials)),
+  googleLogin: () => dispatch(googleLogin()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

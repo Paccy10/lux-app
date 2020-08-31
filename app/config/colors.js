@@ -5,4 +5,6 @@ export default {
   light: '#f8f4f4',
   medium: '#6e6969',
   danger: '#ff5252',
+  google: '#dd4b39',
+  facebook: '#3b5998',
 };
