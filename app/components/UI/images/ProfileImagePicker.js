@@ -3,8 +3,8 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
-import colors from '../../config/colors';
-import { verifyPermissions } from '../../utils/imageUpload';
+import colors from '../../../config/colors';
+import { verifyPermissions } from '../../../utils/imageUpload';
 
 const AppProfileImagePicker = (props) => {
   const [pickedImage, setPickedImage] = useState();
@@ -33,7 +33,7 @@ const AppProfileImagePicker = (props) => {
               ? { uri: props.image }
               : pickedImage
               ? { uri: pickedImage }
-              : require('../../assets/profile.png')
+              : require('../../../assets/profile.png')
           }
         />
       </View>

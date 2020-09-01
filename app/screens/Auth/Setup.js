@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
-import ProfileImagePicker from '../../components/UI/ProfileImagePicker';
+import ProfileImagePicker from '../../components/UI/images/ProfileImagePicker';
 import { setUserProfile } from '../../store/actions/auth';
 
 const validationSchema = Yup.object().shape({

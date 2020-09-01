@@ -4,6 +4,7 @@ import { Avatar } from 'react-native-elements';
 import moment from 'moment';
 
 import AppText from '../components/UI/AppText';
+import PostImage from './UI/images/PostImage';
 import colors from '../config/colors';
 
 const PostItem = ({
@@ -35,13 +36,7 @@ const PostItem = ({
             </AppText>
           </View>
         </View>
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={{ uri: postImage }}
-            resizeMode='cover'
-          />
-        </View>
+        <PostImage source={{ uri: postImage }} />
         <View style={styles.descriptionContainer}>
           <AppText style={styles.description}>
             <AppText style={styles.descriptionUsername}>{fullname} </AppText>
@@ -76,14 +71,6 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 13,
     fontWeight: '100',
-  },
-  imageContainer: {
-    height: 300,
-    backgroundColor: colors.lightGray,
-  },
-  image: {
-    height: '100%',
-    width: '100%',
   },
   descriptionContainer: {
     paddingHorizontal: 20,

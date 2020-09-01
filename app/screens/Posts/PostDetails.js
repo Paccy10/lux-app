@@ -1,17 +1,46 @@
-import React, { useState } from 'react';
-import { StyleSheet, Image, View, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { connect } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 import AppText from '../../components/UI/AppText';
 import AppButton from '../../components/UI/AppButton';
+import PostImage from '../../components/UI/images/PostImage';
 import colors from '../../config/colors';
 import routes from '../../navigation/routes';
-import { deletePost } from '../../store/actions/post';
+import { deletePost, fetchPost } from '../../store/actions/post';
 
-const EditPost = ({ route, auth, deletePost, navigation }) => {
+const PostDetails = ({
+  route,
+  auth,
+  deletePost,
+  navigation,
+  error,
+  fetchPost,
+  post,
+}) => {
   const [loading, setLoading] = useState(false);
-  const post = route.params;
-  const isOwner = post.uid === auth.uid;
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const isFocused = useIsFocused();
+  const isOwner = route.params.uid === auth.uid;
+
+  const loadPost = useCallback(async () => {
+    setLoading(true);
+    await fetchPost(route.params.key);
+    setLoading(false);
+  });
+
+  useEffect(() => {
+    if (isFocused) {
+      loadPost();
+    }
+  }, [isFocused]);
 
   const onDeletePost = () => {
     Alert.alert('Warning', 'Are you sure you want to delete this post?', [
@@ -24,9 +53,9 @@ const EditPost = ({ route, auth, deletePost, navigation }) => {
       {
         text: 'OK',
         onPress: async () => {
-          setLoading(true);
+          setDeleteLoading(true);
           await deletePost(post);
-          setLoading(false);
+          setDeleteLoading(false);
           alert('Post successfully deleted');
           navigation.navigate(routes.HOME);
         },
@@ -34,51 +63,52 @@ const EditPost = ({ route, auth, deletePost, navigation }) => {
     ]);
   };
 
+  if (error) {
+    Alert.alert('Error', error);
+  }
+
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: post.image.imageUrl }} style={styles.image} />
+      {loading ? (
+        <View>
+          <ActivityIndicator color={colors.primary} size='small' />
         </View>
-        <View style={styles.descContainer}>
-          <AppText>{post.description}</AppText>
-        </View>
-        {isOwner && (
-          <View style={styles.buttonsContainer}>
-            <AppButton
-              style={styles.button}
-              color='primary'
-              title='Edit Post'
-            />
-            <AppButton
-              style={styles.button}
-              color='secondary'
-              title='Delete Post'
-              onPress={onDeletePost}
-              loading={loading}
-              disabled={loading}
-            />
+      ) : (
+        <View style={styles.container}>
+          <PostImage source={{ uri: post.image.imageUrl }} />
+          <View style={styles.descContainer}>
+            <AppText>{post.description}</AppText>
           </View>
-        )}
-      </View>
+          {isOwner && (
+            <View style={styles.buttonsContainer}>
+              <AppButton
+                style={styles.button}
+                color='primary'
+                title='Edit Post'
+                onPress={() => navigation.navigate(routes.EDIT_POST, post)}
+              />
+              <AppButton
+                style={styles.button}
+                color='secondary'
+                title='Delete Post'
+                onPress={onDeletePost}
+                loading={deleteLoading}
+                disabled={deleteLoading}
+              />
+            </View>
+          )}
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    height: 300,
-    backgroundColor: colors.lightGray,
-  },
-  image: {
-    height: '100%',
-  },
   descContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 20,
+    padding: 20,
   },
   buttonsContainer: {
-    padding: 10,
+    paddingHorizontal: 20,
     marginTop: 30,
   },
   button: {
@@ -88,10 +118,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.firebase.auth,
+  post: state.post.posts[0],
+  error: state.post.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchPost: (postKey) => dispatch(fetchPost(postKey)),
   deletePost: (post) => dispatch(deletePost(post)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditPost);
+export default connect(mapStateToProps, mapDispatchToProps)(PostDetails);

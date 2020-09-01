@@ -3,6 +3,8 @@ import { uploadPostImage, deleteImage } from '../../utils/imageUpload';
 
 export const createPost = (postData) => {
   return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.CREATE_POST_START });
+
     const { uid } = getState().firebase.auth;
     const uploadResponse = await uploadPostImage(postData.imageUri, uid);
     const imageUrl = await uploadResponse.ref.getDownloadURL();
@@ -31,6 +33,7 @@ export const createPost = (postData) => {
 
 export const fetchPosts = () => {
   return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.FETCH_POSTS_START });
     const firebase = getFirebase();
     return firebase
       .database()
@@ -54,8 +57,30 @@ export const fetchPosts = () => {
   };
 };
 
+export const fetchPost = (postKey) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.FETCH_POST_START });
+    const firebase = getFirebase();
+    return firebase
+      .database()
+      .ref('posts')
+      .child(postKey)
+      .once('value')
+      .then((snapshot) => {
+        const post = snapshot.val();
+        post.key = snapshot.key;
+        dispatch({
+          type: actionTypes.FETCH_POST_SUCCESS,
+          post,
+        });
+      })
+      .catch((error) => dispatch({ type: actionTypes.FETCH_POST_FAIL, error }));
+  };
+};
+
 export const deletePost = (post) => {
   return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.DELETE_POST_START });
     const firebase = getFirebase();
 
     return firebase
@@ -69,6 +94,24 @@ export const deletePost = (post) => {
       })
       .catch((error) =>
         dispatch({ type: actionTypes.DELETE_POST_FAIL, error })
+      );
+  };
+};
+
+export const updatePost = (post, description) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.UPDATE_POST_START });
+    const firebase = getFirebase();
+
+    return firebase
+      .database()
+      .ref('posts')
+      .child(post.key)
+      .child('description')
+      .set(description)
+      .then(() => dispatch({ type: actionTypes.UPDATE_POST_SUCCESS }))
+      .catch((error) =>
+        dispatch({ type: actionTypes.UPDATE_POST_FAIL, error })
       );
   };
 };

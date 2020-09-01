@@ -1,47 +1,37 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
-import PostImagePicker from '../../components/UI/images/PostImagePicker';
+import PostImage from '../../components/UI/images/PostImage';
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
-import { createPost } from '../../store/actions/post';
+import { updatePost } from '../../store/actions/post';
 import routes from '../../navigation/routes';
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required().label('Description'),
 });
 
-const NewPost = ({ error, createPost, navigation }) => {
-  const [image, setImage] = useState();
+const EditPost = ({ route, error, updatePost, navigation }) => {
+  const post = route.params;
   const [loading, setLoading] = useState(false);
 
-  const imageTakenHandler = (imagePath) => {
-    setImage(imagePath);
-  };
-
   const handleSubmit = async (postData) => {
-    if (!image) {
-      Alert.alert('Error', 'The post image is required');
-      return;
-    }
     setLoading(true);
-    postData.imageUri = image;
-    await createPost(postData);
+    await updatePost(post, postData.description);
     setLoading(false);
-    navigation.navigate(routes.HOME);
+    navigation.navigate(routes.POST_DETAILS, post);
   };
 
   if (error) {
     Alert.alert('Error', error);
   }
-
   return (
     <View>
-      <PostImagePicker onImageTaken={imageTakenHandler} />
+      <PostImage source={{ uri: post.image.imageUrl }} />
       <View style={styles.formContainer}>
         <AppForm
-          initialValues={{ description: '' }}
+          initialValues={{ description: post.description }}
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
             handleSubmit(values);
@@ -83,12 +73,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  loading: state.post.loading,
   error: state.post.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  createPost: (postData) => dispatch(createPost(postData)),
+  updatePost: (post, description) => dispatch(updatePost(post, description)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewPost);
+export default connect(mapStateToProps, mapDispatchToProps)(EditPost);

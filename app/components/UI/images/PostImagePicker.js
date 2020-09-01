@@ -2,8 +2,9 @@ import React, { useState, Fragment } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-import AppButton from '../../components/UI/AppButton';
-import { verifyPermissions } from '../../utils/imageUpload';
+import AppButton from '../AppButton';
+import PostImage from '../images/PostImage';
+import { verifyPermissions } from '../../../utils/imageUpload';
 
 const PostImagePicker = (props) => {
   const [pickedImage, setPickedImage] = useState();
@@ -24,13 +25,7 @@ const PostImagePicker = (props) => {
   return (
     <Fragment>
       {pickedImage ? (
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: pickedImage }}
-            style={styles.image}
-            resizeMode='cover'
-          />
-        </View>
+        <PostImage source={{ uri: pickedImage }} />
       ) : (
         <View style={styles.imageButtonContainer}>
           <AppButton
@@ -48,14 +43,6 @@ const styles = StyleSheet.create({
   imageButtonContainer: {
     paddingHorizontal: 20,
     paddingVertical: 40,
-  },
-  imageContainer: {
-    height: 300,
-    marginBottom: 10,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
   },
 });
 

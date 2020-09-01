@@ -6,4 +6,5 @@ export default Object.freeze({
   HOME: 'Home',
   NEW_POST: 'New Post',
   POST_DETAILS: 'Post Details',
+  EDIT_POST: 'Edit Post',
 });
