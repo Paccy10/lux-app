@@ -7,4 +7,5 @@ export default Object.freeze({
   NEW_POST: 'New Post',
   POST_DETAILS: 'Post Details',
   EDIT_POST: 'Edit Post',
+  VIEW_PROFILE: 'View Profile',
 });

@@ -3,9 +3,9 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import moment from 'moment';
 
-import AppText from '../components/UI/AppText';
-import PostImage from './UI/images/PostImage';
-import colors from '../config/colors';
+import AppText from '../AppText';
+import PostImage from '../images/PostImage';
+import colors from '../../../config/colors';
 
 const PostItem = ({
   fullname,
@@ -25,7 +25,7 @@ const PostItem = ({
             source={
               profileImage
                 ? { uri: profileImage }
-                : require('../assets/profile.png')
+                : require('../../../assets/profile.png')
             }
             avatarStyle={styles.avatar}
           />

@@ -6,4 +6,7 @@ export default {
   },
   headerTintColor: colors.white,
   headerBackTitle: 'Back',
+  headerTitleStyle: {
+    textTransform: 'uppercase',
+  },
 };

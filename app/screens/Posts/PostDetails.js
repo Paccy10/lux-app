@@ -56,7 +56,7 @@ const PostDetails = ({
           setDeleteLoading(true);
           await deletePost(post);
           setDeleteLoading(false);
-          alert('Post successfully deleted');
+          Alert.alert('Success', 'Post successfully deleted');
           navigation.navigate(routes.HOME);
         },
       },
@@ -86,6 +86,7 @@ const PostDetails = ({
                 color='primary'
                 title='Edit Post'
                 onPress={() => navigation.navigate(routes.EDIT_POST, post)}
+                disabled={deleteLoading}
               />
               <AppButton
                 style={styles.button}

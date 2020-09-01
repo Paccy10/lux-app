@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 
-import PostItem from '../components/PostItem';
+import PostItem from '../components/UI/lists/PostItem';
 import AppText from '../components/UI/AppText';
 import AppButton from '../components/UI/AppButton';
 import ListItemsSeparator from '../components/UI/lists/ListItemsSeparator';
@@ -19,7 +19,7 @@ import routes from '../navigation/routes';
 
 const Home = (props) => {
   const isFocused = useIsFocused();
-  const { error, fetchPosts, posts } = props;
+  const { error, fetchPosts, posts, navigation } = props;
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -29,11 +29,19 @@ const Home = (props) => {
     setLoading(false);
   });
 
+  const loadPostsonRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchPosts();
+    setIsRefreshing(false);
+  };
+
   useEffect(() => {
-    if (isFocused) {
+    const unsubscribe = navigation.addListener('focus', () => {
       loadPosts();
-    }
-  }, [isFocused]);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <Fragment>
@@ -66,7 +74,7 @@ const Home = (props) => {
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
-              onRefresh={fetchPosts}
+              onRefresh={loadPostsonRefresh}
               tintColor={colors.primary}
               titleColor={colors.primary}
               title='Pull to refresh'

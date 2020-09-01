@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import AppText from '../AppText';
 import AppDrawerItem from './AppDrawerItem';
+import ProfileImage from '../images/ProfileImage';
 import colors from '../../../config/colors';
 import { logout } from '../../../store/actions/auth';
 import routes from '../../../navigation/routes';
@@ -14,31 +15,12 @@ const DrawerContent = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const [isImageLoading, setIsImageLoading] = useState(false);
   const profile = useSelector((state) => state.firebase.profile);
 
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.profileContainer}>
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={
-              profile.profileImage
-                ? { uri: profile.profileImage.imageUrl }
-                : require('../../../assets/profile.png')
-            }
-            onLoadStart={() => setIsImageLoading(true)}
-            onLoadEnd={() => setIsImageLoading(false)}
-          />
-          {isImageLoading && (
-            <ActivityIndicator
-              size='small'
-              color={colors.primary}
-              style={styles.imageLoader}
-            />
-          )}
-        </View>
+        <ProfileImage source={profile.profileImage.imageUrl} />
         <AppText style={styles.username}>{profile.fullname}</AppText>
       </View>
       <AppDrawerItem
@@ -54,7 +36,7 @@ const DrawerContent = (props) => {
       <AppDrawerItem
         label='Profile'
         icon='account-circle'
-        onPress={() => navigation.navigate(routes.HOME)}
+        onPress={() => navigation.navigate(routes.VIEW_PROFILE)}
       />
       <AppDrawerItem
         label='Friends'
@@ -86,22 +68,6 @@ const styles = StyleSheet.create({
     height: 200,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  imageContainer: {
-    height: 114,
-    width: 114,
-    borderRadius: 57,
-    backgroundColor: colors.lightGray,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  image: {
-    height: '100%',
-    width: '100%',
-  },
-  imageLoader: {
-    position: 'absolute',
   },
   username: {
     color: colors.white,
