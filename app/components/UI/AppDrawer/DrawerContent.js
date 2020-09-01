@@ -25,7 +25,7 @@ const DrawerContent = (props) => {
             style={styles.image}
             source={
               profile.profileImage
-                ? { uri: profile.profileImage }
+                ? { uri: profile.profileImage.imageUrl }
                 : require('../../../assets/profile.png')
             }
             onLoadStart={() => setIsImageLoading(true)}
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     height: 114,
     width: 114,
     borderRadius: 57,
-    backgroundColor: colors.white,
+    backgroundColor: colors.lightGray,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',

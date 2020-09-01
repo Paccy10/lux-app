@@ -1,13 +1,12 @@
 import * as actionTypes from './types';
-import { uploadPostImage } from '../../utils/imageUpload';
+import { uploadPostImage, deleteImage } from '../../utils/imageUpload';
 
 export const createPost = (postData) => {
   return async (dispatch, getState, { getFirebase }) => {
-    dispatch({ type: actionTypes.CREATE_POST_START });
-
     const { uid } = getState().firebase.auth;
     const uploadResponse = await uploadPostImage(postData.imageUri, uid);
     const imageUrl = await uploadResponse.ref.getDownloadURL();
+    const imageName = await uploadResponse.ref.name;
     const { fullname, profileImage } = getState().firebase.profile;
     const user = { fullname, profileImage };
     const firebase = getFirebase();
@@ -20,7 +19,7 @@ export const createPost = (postData) => {
         uid,
         createdAt: new Date().toString(),
         description: postData.description,
-        image: imageUrl,
+        image: { imageUrl, imageName },
         user,
       })
       .then(() => dispatch({ type: actionTypes.CREATE_POST_SUCCESS }))
@@ -32,7 +31,6 @@ export const createPost = (postData) => {
 
 export const fetchPosts = () => {
   return async (dispatch, getState, { getFirebase }) => {
-    dispatch({ type: actionTypes.FETCH_POSTS_START });
     const firebase = getFirebase();
     return firebase
       .database()
@@ -52,6 +50,25 @@ export const fetchPosts = () => {
       })
       .catch((error) =>
         dispatch({ type: actionTypes.FETCH_POSTS_FAIL, error })
+      );
+  };
+};
+
+export const deletePost = (post) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    const firebase = getFirebase();
+
+    return firebase
+      .database()
+      .ref('posts')
+      .child(post.key)
+      .remove()
+      .then(async () => {
+        await deleteImage('post images', post.image.imageName);
+        dispatch({ type: actionTypes.DELETE_POST_SUCCESS });
+      })
+      .catch((error) =>
+        dispatch({ type: actionTypes.DELETE_POST_FAIL, error })
       );
   };
 };

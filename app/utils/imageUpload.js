@@ -47,3 +47,15 @@ export const uploadPostImage = async (imageUri, userId) => {
     throw new Error(error.message);
   }
 };
+
+export const deleteImage = async (folderName, imageName) => {
+  try {
+    return firebase
+      .storage()
+      .ref()
+      .child(`${folderName}/${imageName}`)
+      .delete();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

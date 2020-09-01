@@ -54,10 +54,12 @@ const Home = (props) => {
             <PostItem
               fullname={item.user.fullname}
               time={item.createdAt}
-              profileImage={item.user.profileImage}
-              postImage={item.image}
+              profileImage={item.user.profileImage.imageUrl}
+              postImage={item.image.imageUrl}
               description={item.description}
-              onPress={() => props.navigation.navigate(routes.EDIT_POST, item)}
+              onPress={() =>
+                props.navigation.navigate(routes.POST_DETAILS, item)
+              }
             />
           )}
           ItemSeparatorComponent={ListItemsSeparator}

@@ -7,20 +7,16 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.CREATE_POST_START:
-    case actionTypes.FETCH_POSTS_START:
-      return {
-        ...state,
-        error: null,
-      };
-
     case actionTypes.CREATE_POST_SUCCESS:
+    case actionTypes.DELETE_POST_SUCCESS:
       return {
         ...state,
         error: null,
       };
 
     case actionTypes.CREATE_POST_FAIL:
+    case actionTypes.FETCH_POSTS_FAIL:
+    case actionTypes.DELETE_POST_FAIL:
       return {
         ...state,
         error: action.error.message,

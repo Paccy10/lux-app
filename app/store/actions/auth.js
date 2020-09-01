@@ -48,9 +48,11 @@ export const setUserProfile = (userData) => {
     const firebase = getFirebase();
     const { uid } = getState().firebase.auth;
     let imageUrl = '';
+    let imageName = '';
     if (userData.imageUri) {
       const uploadResponse = await uploadProfileImage(userData.imageUri, uid);
       imageUrl = await uploadResponse.ref.getDownloadURL();
+      imageName = await uploadResponse.ref.name;
     }
 
     firebase
@@ -64,7 +66,7 @@ export const setUserProfile = (userData) => {
         gender: 'none',
         dateOfBirth: 'none',
         relationshipStatus: 'none',
-        profileImage: imageUrl,
+        profileImage: { imageUrl, imageName },
       })
       .then(() => dispatch({ type: actionTypes.SETUP_PROFILE_SUCCESS }))
       .catch((error) =>
