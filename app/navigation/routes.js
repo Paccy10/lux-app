@@ -5,4 +5,5 @@ export default Object.freeze({
   SETUP: 'Setup',
   HOME: 'Home',
   NEW_POST: 'New Post',
+  POST_DETAILS: 'Post Details',
 });

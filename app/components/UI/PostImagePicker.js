@@ -16,7 +16,7 @@ const PostImagePicker = (props) => {
     const image = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.5,
     });
     setPickedImage(image.uri);
     props.onImageTaken(image.uri);

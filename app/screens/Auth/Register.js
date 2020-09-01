@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
 import GoogleButton from '../../components/UI/GoogleButton';
-import FacebookButton from '../../components/UI/FacebookButton';
 import { register, googleLogin } from '../../store/actions/auth';
 
 const validationSchema = Yup.object().shape({
@@ -87,7 +86,6 @@ const Register = ({
             loading={googleLoading}
             disabled={googleLoading}
           />
-          <FacebookButton style={styles.button} />
         </View>
       </View>
     </ScrollView>

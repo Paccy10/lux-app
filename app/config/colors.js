@@ -7,4 +7,5 @@ export default {
   danger: '#ff5252',
   google: '#dd4b39',
   facebook: '#3b5998',
+  lightGray: '#f7f7f7',
 };

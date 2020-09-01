@@ -15,6 +15,7 @@ import AppButton from '../components/UI/AppButton';
 import ListItemsSeparator from '../components/UI/lists/ListItemsSeparator';
 import { fetchPosts } from '../store/actions/post';
 import colors from '../config/colors';
+import routes from '../navigation/routes';
 
 const Home = (props) => {
   const isFocused = useIsFocused();
@@ -56,6 +57,7 @@ const Home = (props) => {
               profileImage={item.user.profileImage}
               postImage={item.image}
               description={item.description}
+              onPress={() => props.navigation.navigate(routes.EDIT_POST, item)}
             />
           )}
           ItemSeparatorComponent={ListItemsSeparator}

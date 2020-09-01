@@ -17,7 +17,7 @@ const AppProfileImagePicker = (props) => {
     const image = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1,
+      quality: 0.5,
     });
     setPickedImage(image.uri);
     props.onImageTaken(image.uri);
