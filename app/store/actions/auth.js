@@ -1,7 +1,7 @@
 import * as Google from 'expo-google-app-auth';
 
 import * as actionTypes from './types';
-import { uploadProfileImage } from '../../utils/imageUpload';
+import { uploadProfileImage, deleteImage } from '../../utils/imageUpload';
 import { IOS_CLIENT_ID, ANDROID_CLIENT_ID } from '@env';
 
 export const register = (newUser) => {
@@ -63,9 +63,9 @@ export const setUserProfile = (userData) => {
         fullname: userData.fullname,
         country: userData.country,
         status: 'Hey there, I am using Lux App!',
-        gender: 'none',
-        dateOfBirth: 'none',
-        relationshipStatus: 'none',
+        gender: '',
+        dateOfBirth: '',
+        relationshipStatus: '',
         profileImage: { imageUrl, imageName },
       })
       .then(() => dispatch({ type: actionTypes.SETUP_PROFILE_SUCCESS }))
@@ -101,5 +101,43 @@ export const googleLogin = () => {
     } catch (error) {
       dispatch({ type: actionTypes.GOOGLE_LOGIN_FAIL, error });
     }
+  };
+};
+
+export const updateProfile = (userData) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.UPDATE_PROFILE_START });
+    const firebase = getFirebase();
+    const { uid } = getState().firebase.auth;
+    const profile = getState().firebase.profile;
+    let imageUrl = profile.profileImage.imageUrl;
+    let imageName = profile.profileImage.imageName;
+    if (userData.imageUri && profile.profileImage) {
+      await deleteImage('profile images', profile.profileImage.imageName);
+    }
+    if (userData.imageUri) {
+      const uploadResponse = await uploadProfileImage(userData.imageUri, uid);
+      imageUrl = await uploadResponse.ref.getDownloadURL();
+      imageName = await uploadResponse.ref.name;
+    }
+
+    return firebase
+      .database()
+      .ref('users')
+      .child(uid)
+      .update({
+        username: userData.username,
+        fullname: userData.fullname,
+        country: userData.country,
+        status: userData.status,
+        gender: userData.gender,
+        dateOfBirth: userData.dateOfBirth,
+        relationshipStatus: userData.relationshipStatus,
+        profileImage: { imageUrl, imageName },
+      })
+      .then(() => dispatch({ type: actionTypes.UPDATE_PROFILE_SUCCESS }))
+      .catch((error) =>
+        dispatch({ type: actionTypes.UPDATE_PROFILE_FAIL, error })
+      );
   };
 };

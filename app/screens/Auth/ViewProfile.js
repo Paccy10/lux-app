@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 import ProfileImage from '../../components/UI/images/ProfileImage';
 import ProfileItem from '../../components/UI/lists/ProfileItem';
@@ -37,19 +38,27 @@ const ViewProfile = () => {
           <ProfileItem
             icon='calendar-clock'
             header='Date of Birth'
-            subheader={profile.dateOfBirth}
+            subheader={
+              profile.dateOfBirth
+                ? moment(profile.dateOfBirth).format('DD-MM-YYYY')
+                : 'Not specified'
+            }
             separator
           />
           <ProfileItem
             icon='gender-male-female'
             header='Gender'
-            subheader={profile.gender}
+            subheader={profile.gender ? profile.gender.label : 'Not specified'}
             separator
           />
           <ProfileItem
             icon='account-multiple'
             header='Realationship Status'
-            subheader={profile.relationshipStatus}
+            subheader={
+              profile.relationshipStatus
+                ? profile.relationshipStatus.label
+                : 'Not specified'
+            }
             separator
           />
           <ProfileItem

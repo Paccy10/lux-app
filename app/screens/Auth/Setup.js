@@ -83,14 +83,6 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
     paddingHorizontal: 20,
   },
-  image: {
-    height: 150,
-    width: 150,
-    borderRadius: 75,
-    borderColor: colors.primary,
-    borderWidth: 3,
-    marginBottom: 50,
-  },
   button: {
     marginTop: 20,
   },

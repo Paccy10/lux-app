@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -8,6 +14,7 @@ import { verifyPermissions } from '../../../utils/imageUpload';
 
 const AppProfileImagePicker = (props) => {
   const [pickedImage, setPickedImage] = useState();
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   const takeImageHandler = async () => {
     const hasPermission = await verifyPermissions();
@@ -29,13 +36,22 @@ const AppProfileImagePicker = (props) => {
         <Image
           style={styles.image}
           source={
-            props.image
-              ? { uri: props.image }
-              : pickedImage
+            pickedImage
               ? { uri: pickedImage }
+              : props.image
+              ? { uri: props.image }
               : require('../../../assets/profile.png')
           }
+          onLoadStart={() => setIsImageLoading(true)}
+          onLoadEnd={() => setIsImageLoading(false)}
         />
+        {isImageLoading && (
+          <ActivityIndicator
+            size='small'
+            color={colors.primary}
+            style={styles.imageLoader}
+          />
+        )}
       </View>
       <TouchableOpacity style={styles.pick} onPress={takeImageHandler}>
         <MaterialCommunityIcons name='camera' size={25} color={colors.white} />
@@ -49,14 +65,20 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     borderRadius: 75,
+    backgroundColor: colors.lightGray,
     borderColor: colors.primary,
     borderWidth: 3,
     marginBottom: 50,
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     height: '100%',
     width: '100%',
+  },
+  imageLoader: {
+    position: 'absolute',
   },
   pick: {
     position: 'absolute',

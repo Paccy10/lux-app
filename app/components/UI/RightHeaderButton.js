@@ -3,19 +3,14 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useNavigation } from '@react-navigation/native';
 
 import AppHeaderButton from './AppHeaderButton';
-import routes from '../../navigation/routes';
 
-const NewPostButton = () => {
+const RightHeaderButton = ({ icon, route }) => {
   const navigation = useNavigation();
   return (
     <HeaderButtons HeaderButtonComponent={AppHeaderButton}>
-      <Item
-        title='NewPost'
-        iconName='newspaper-plus'
-        onPress={() => navigation.navigate(routes.NEW_POST)}
-      />
+      <Item iconName={icon} onPress={() => navigation.navigate(route)} />
     </HeaderButtons>
   );
 };
 
-export default NewPostButton;
+export default RightHeaderButton;
