@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import colors from '../../config/colors';
 import defaultStyles from '../../config/styles';
 
-const AppTextInput = ({ icon, width = '100%', ...otherProps }) => {
+const AppTextInput = ({ icon, loadingIcon, width = '100%', ...otherProps }) => {
   return (
     <View
       style={[
@@ -27,6 +27,7 @@ const AppTextInput = ({ icon, width = '100%', ...otherProps }) => {
         style={[defaultStyles.text, styles.input]}
         {...otherProps}
       />
+      {loadingIcon && <ActivityIndicator color={colors.medium} size='small' />}
     </View>
   );
 };

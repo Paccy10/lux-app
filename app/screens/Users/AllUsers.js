@@ -14,16 +14,23 @@ import AppButton from '../../components/UI/AppButton';
 import FriendItem from '../../components/UI/lists/FriendItem';
 import ListItemsSeparator from '../../components/UI/lists/ListItemsSeparator';
 import colors from '../../config/colors';
-import { fetchUsers } from '../../store/actions/user';
+import { fetchUsers, searchUser } from '../../store/actions/user';
 
-const AllUsers = ({ fetchUsers, users, error, navigation }) => {
+const AllUsers = ({ fetchUsers, searchUser, users, error, navigation }) => {
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
     await fetchUsers();
     setLoading(false);
   });
+
+  const loadSearchUsers = async (query) => {
+    setSearchLoading(true);
+    await searchUser(query);
+    setSearchLoading(false);
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -40,7 +47,12 @@ const AllUsers = ({ fetchUsers, users, error, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <AppTextInput icon='account-search' placeholder='Search Friends...' />
+        <AppTextInput
+          icon='account-search'
+          placeholder='Search Friends...'
+          onChangeText={(text) => loadSearchUsers(text)}
+          loadingIcon={searchLoading}
+        />
       </View>
       <Fragment>
         {loading ? (
@@ -57,7 +69,7 @@ const AllUsers = ({ fetchUsers, users, error, navigation }) => {
               style={styles.retryBtn}
             />
           </View>
-        ) : (
+        ) : users.length > 0 ? (
           <FlatList
             data={users}
             keyExtractor={(user) => user.key}
@@ -71,6 +83,10 @@ const AllUsers = ({ fetchUsers, users, error, navigation }) => {
             ItemSeparatorComponent={ListItemsSeparator}
             style={styles.listContainer}
           />
+        ) : (
+          <View style={styles.noData}>
+            <AppText style={styles.noDataText}>No user found</AppText>
+          </View>
         )}
       </Fragment>
     </View>
@@ -101,6 +117,13 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'center',
   },
+  noData: {
+    alignItems: 'center',
+  },
+  noDataText: {
+    color: colors.medium,
+    fontStyle: 'italic',
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -110,6 +133,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchUsers: () => dispatch(fetchUsers()),
+  searchUser: (query) => dispatch(searchUser(query)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllUsers);
