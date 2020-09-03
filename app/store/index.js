@@ -5,11 +5,13 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import authReducer from './reducers/auth';
 import postReducer from './reducers/post';
+import userReducer from './reducers/user';
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
   auth: authReducer,
   post: postReducer,
+  user: userReducer,
 });
 
 const store = createStore(

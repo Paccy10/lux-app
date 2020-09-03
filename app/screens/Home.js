@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
@@ -43,6 +44,10 @@ const Home = (props) => {
     return unsubscribe;
   }, [navigation]);
 
+  if (error) {
+    Alert.alert('Error', error);
+  }
+
   return (
     <Fragment>
       {loading ? (
@@ -51,8 +56,12 @@ const Home = (props) => {
         </View>
       ) : error ? (
         <View style={styles.error}>
-          <AppText>Couldn't retrieve the posts.</AppText>
-          <AppButton title='Retry' onPress={fetchPosts} />
+          <AppText style={styles.text}>Couldn't retrieve the posts.</AppText>
+          <AppButton
+            style={styles.retryBtn}
+            title='Retry'
+            onPress={loadPosts}
+          />
         </View>
       ) : (
         <FlatList
@@ -92,6 +101,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
+  },
+  error: {
+    paddingHorizontal: 20,
+  },
+  retryBtn: {
+    marginTop: 10,
+  },
+  text: {
+    textAlign: 'center',
   },
 });
 

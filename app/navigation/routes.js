@@ -9,4 +9,5 @@ export default Object.freeze({
   EDIT_POST: 'Edit Post',
   VIEW_PROFILE: 'View Profile',
   EDIT_PROFILE: 'Edit Profile',
+  ALL_USERS: 'ALL_USERS',
 });

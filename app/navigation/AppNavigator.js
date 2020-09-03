@@ -7,6 +7,7 @@ import PostDetailsScreen from '../screens/Posts/PostDetails';
 import EditPostScreen from '../screens/Posts/EditPost';
 import ViewProfileScreen from '../screens/Auth/ViewProfile';
 import EditProfileScreen from '../screens/Auth/EditProfile';
+import AllUsersScreen from '../screens/Users/AllUsers';
 import defaultNavigationOptions from './defaultOptions';
 import DrawerToggler from '../components/UI/AppDrawer/DrawerToggler';
 import RightHeaderButton from '../components/UI/RightHeaderButton';
@@ -47,6 +48,11 @@ const FeedNavigator = () => {
         }}
       />
       <Stack.Screen name={routes.EDIT_PROFILE} component={EditProfileScreen} />
+      <Stack.Screen
+        name={routes.ALL_USERS}
+        component={AllUsersScreen}
+        options={{ headerTitle: 'Find Friends' }}
+      />
     </Stack.Navigator>
   );
 };
