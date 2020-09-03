@@ -174,8 +174,8 @@ const EditProfile = ({
               icon='information'
               placeholder='Status'
               autoCorrect={false}
-              autoCapitalize='words'
-              textContentType='countryName'
+              autoCapitalize='none'
+              textContentType='none'
             />
             <AppSubmitButton
               title='Update Profile'

@@ -112,7 +112,7 @@ export const updateProfile = (userData) => {
     const profile = getState().firebase.profile;
     let imageUrl = profile.profileImage.imageUrl;
     let imageName = profile.profileImage.imageName;
-    if (userData.imageUri && profile.profileImage) {
+    if (userData.imageUri && profile.profileImage.imageName) {
       await deleteImage('profile images', profile.profileImage.imageName);
     }
     if (userData.imageUri) {

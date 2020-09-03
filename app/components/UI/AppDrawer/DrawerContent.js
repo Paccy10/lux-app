@@ -20,7 +20,9 @@ const DrawerContent = (props) => {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.profileContainer}>
-        <ProfileImage source={profile.profileImage.imageUrl} />
+        <ProfileImage
+          source={profile.profileImage ? profile.profileImage.imageUrl : ''}
+        />
         <AppText style={styles.username}>{profile.fullname}</AppText>
       </View>
       <AppDrawerItem
