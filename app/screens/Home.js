@@ -8,7 +8,6 @@ import {
   Alert,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
 
 import PostItem from '../components/UI/lists/PostItem';
 import AppText from '../components/UI/AppText';
@@ -19,8 +18,7 @@ import colors from '../config/colors';
 import routes from '../navigation/routes';
 
 const Home = (props) => {
-  const isFocused = useIsFocused();
-  const { error, fetchPosts, posts, navigation } = props;
+  const { error, fetchPosts, posts, navigation, dispatch } = props;
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +40,7 @@ const Home = (props) => {
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, dispatch]);
 
   if (error) {
     Alert.alert('Error', error);
@@ -59,6 +57,7 @@ const Home = (props) => {
           <AppText style={styles.text}>Couldn't retrieve the posts.</AppText>
           <AppButton
             style={styles.retryBtn}
+            color='secondary'
             title='Retry'
             onPress={loadPosts}
           />
@@ -77,6 +76,9 @@ const Home = (props) => {
               onPress={() =>
                 props.navigation.navigate(routes.POST_DETAILS, item)
               }
+              postKey={item.key}
+              likes={item.likes}
+              hasLiked={item.hasLiked}
             />
           )}
           ItemSeparatorComponent={ListItemsSeparator}
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   error: {
-    paddingHorizontal: 20,
+    padding: 20,
   },
   retryBtn: {
     marginTop: 10,

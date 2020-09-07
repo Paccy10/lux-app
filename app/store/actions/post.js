@@ -39,13 +39,39 @@ export const fetchPosts = () => {
       .database()
       .ref('posts')
       .once('value')
-      .then((snapshot) => {
+      .then(async (snapshot) => {
         const posts = [];
+        const reads = [];
         snapshot.forEach((childSnapshot) => {
           const post = childSnapshot.val();
           post.key = childSnapshot.key;
+          const { uid } = getState().firebase.auth;
+
+          const promise = firebase
+            .database()
+            .ref('likes')
+            .child(post.key)
+            .once('value')
+            .then((likeSnapshot) => {
+              const likes = likeSnapshot.numChildren();
+              let hasLiked = false;
+              post.likes = likes;
+              if (likeSnapshot.hasChild(uid)) {
+                hasLiked = true;
+              }
+              post.likes = likes;
+              post.hasLiked = hasLiked;
+              dispatch({
+                type: actionTypes.FETCH_POST_LIKES_SUCCESS,
+              });
+            })
+            .catch((error) =>
+              dispatch({ type: actionTypes.FETCH_POST_LIKES_FAIL, error })
+            );
+          reads.push(promise);
           posts.unshift(post);
         });
+        await Promise.all(reads);
         dispatch({
           type: actionTypes.FETCH_POSTS_SUCCESS,
           posts,

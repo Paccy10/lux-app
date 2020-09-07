@@ -1,11 +1,19 @@
-import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { Avatar } from 'react-native-elements';
 import moment from 'moment';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
 
 import AppText from '../AppText';
 import PostImage from '../images/PostImage';
 import colors from '../../../config/colors';
+import { likePost } from '../../../store/actions/like';
 
 const PostItem = ({
   fullname,
@@ -14,7 +22,16 @@ const PostItem = ({
   postImage,
   description,
   onPress,
+  postKey,
+  likes,
+  hasLiked,
 }) => {
+  const dispatch = useDispatch();
+
+  const onLIkePost = (postKey) => {
+    dispatch(likePost(postKey));
+  };
+
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
       <View style={styles.container}>
@@ -42,6 +59,30 @@ const PostItem = ({
             <AppText style={styles.descriptionUsername}>{fullname} </AppText>
             {description}
           </AppText>
+        </View>
+        <View style={styles.buttons}>
+          <View style={styles.button}>
+            {hasLiked ? (
+              <TouchableWithoutFeedback onPress={() => onLIkePost(postKey)}>
+                <MaterialCommunityIcons
+                  name='heart'
+                  size={23}
+                  color={colors.secondary}
+                />
+              </TouchableWithoutFeedback>
+            ) : (
+              <TouchableWithoutFeedback onPress={() => onLIkePost(postKey)}>
+                <MaterialCommunityIcons name='heart-outline' size={23} />
+              </TouchableWithoutFeedback>
+            )}
+            <AppText style={styles.text}>{likes} Likes</AppText>
+          </View>
+          <View style={styles.button}>
+            <TouchableWithoutFeedback>
+              <MaterialCommunityIcons name='comment-outline' size={23} />
+            </TouchableWithoutFeedback>
+            <AppText style={styles.text}>0 comments</AppText>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -84,6 +125,19 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 15,
     fontWeight: '300',
+  },
+  buttons: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: 'row',
+  },
+  button: {
+    flexDirection: 'row',
+    marginRight: 20,
+  },
+  text: {
+    marginLeft: 10,
+    fontSize: 16,
   },
 });
 
