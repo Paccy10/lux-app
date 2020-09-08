@@ -6,6 +6,7 @@ import routes from './routes';
 import WelcomeScreen from '../screens/Welcome';
 import RegisterScreen from '../screens/Auth/Register';
 import LoginScreen from '../screens/Auth/Login';
+import ResetPasswordScreen from '../screens/Auth/ResetPassword';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,11 @@ const AuthNavigator = () => {
       />
       <Stack.Screen name={routes.REGISTER} component={RegisterScreen} />
       <Stack.Screen name={routes.LOGIN} component={LoginScreen} />
+      <Stack.Screen
+        name={routes.RESET_PASSWORD}
+        component={ResetPasswordScreen}
+        options={{ headerTitle: 'Request Link' }}
+      />
     </Stack.Navigator>
   );
 };

@@ -141,3 +141,18 @@ export const updateProfile = (userData) => {
       );
   };
 };
+
+export const resetPassword = (userEmail) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.RESET_PASSWORD_START });
+    const firebase = getFirebase();
+
+    return firebase
+      .auth()
+      .sendPasswordResetEmail(userEmail)
+      .then(() => dispatch({ type: actionTypes.RESET_PASSWORD_SUCCESS }))
+      .catch((error) =>
+        dispatch({ type: actionTypes.RESET_PASSWORD_FAIL, error })
+      );
+  };
+};

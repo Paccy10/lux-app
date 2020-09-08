@@ -1,18 +1,35 @@
 import React from 'react';
-import { StyleSheet, Image, View, ScrollView, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  View,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 
 import { AppForm, AppFormField, AppSubmitButton } from '../../components/forms';
 import GoogleButton from '../../components/UI/GoogleButton';
+import AppText from '../../components/UI/AppText';
 import { login, googleLogin } from '../../store/actions/auth';
+import colors from '../../config/colors';
+import routes from '../../navigation/routes';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label('Email'),
   password: Yup.string().required().min(6).label('Password'),
 });
 
-const Login = ({ login, loading, authError, googleLogin, googleLoading }) => {
+const Login = ({
+  login,
+  loading,
+  authError,
+  googleLogin,
+  googleLoading,
+  navigation,
+}) => {
   const handleSubmit = (credentials) => {
     login(credentials);
   };
@@ -69,6 +86,12 @@ const Login = ({ login, loading, authError, googleLogin, googleLoading }) => {
             disabled={googleLoading}
           />
         </View>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={() => navigation.navigate(routes.RESET_PASSWORD)}
+        >
+          <AppText style={styles.linkText}>Forgot Password</AppText>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -92,6 +115,14 @@ const styles = StyleSheet.create({
   socialButtons: {
     marginTop: 20,
     width: '100%',
+  },
+  link: {
+    marginTop: 20,
+  },
+  linkText: {
+    color: colors.primary,
+    fontSize: 20,
+    fontWeight: '700',
   },
 });
 
