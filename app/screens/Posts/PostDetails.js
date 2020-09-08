@@ -70,7 +70,7 @@ const PostDetails = ({
   return (
     <ScrollView>
       {loading ? (
-        <View>
+        <View style={styles.loader}>
           <ActivityIndicator color={colors.primary} size='small' />
         </View>
       ) : (
@@ -114,6 +114,9 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 20,
+  },
+  loader: {
+    padding: 20,
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -8,12 +8,14 @@ import {
 import { Avatar } from 'react-native-elements';
 import moment from 'moment';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 import AppText from '../AppText';
 import PostImage from '../images/PostImage';
 import colors from '../../../config/colors';
 import { likePost } from '../../../store/actions/like';
+import routes from '../../../navigation/routes';
 
 const PostItem = ({
   fullname,
@@ -25,8 +27,10 @@ const PostItem = ({
   postKey,
   likes,
   hasLiked,
+  comments,
 }) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const onLIkePost = (postKey) => {
     dispatch(likePost(postKey));
@@ -62,26 +66,32 @@ const PostItem = ({
         </View>
         <View style={styles.buttons}>
           <View style={styles.button}>
-            {hasLiked ? (
-              <TouchableWithoutFeedback onPress={() => onLIkePost(postKey)}>
-                <MaterialCommunityIcons
-                  name='heart'
-                  size={23}
-                  color={colors.secondary}
-                />
-              </TouchableWithoutFeedback>
-            ) : (
-              <TouchableWithoutFeedback onPress={() => onLIkePost(postKey)}>
-                <MaterialCommunityIcons name='heart-outline' size={23} />
-              </TouchableWithoutFeedback>
-            )}
-            <AppText style={styles.text}>{likes} Likes</AppText>
+            <TouchableWithoutFeedback onPress={() => onLIkePost(postKey)}>
+              <View style={{ flexDirection: 'row' }}>
+                {hasLiked ? (
+                  <MaterialCommunityIcons
+                    name='heart'
+                    size={23}
+                    color={colors.secondary}
+                  />
+                ) : (
+                  <MaterialCommunityIcons name='heart-outline' size={23} />
+                )}
+                <AppText style={styles.text}>{likes} Likes</AppText>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
           <View style={styles.button}>
-            <TouchableWithoutFeedback>
-              <MaterialCommunityIcons name='comment-outline' size={23} />
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate(routes.COMMENTS, postKey)}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                <MaterialCommunityIcons name='comment-outline' size={23} />
+                <AppText style={styles.text}>
+                  {comments.length} comments
+                </AppText>
+              </View>
             </TouchableWithoutFeedback>
-            <AppText style={styles.text}>0 comments</AppText>
           </View>
         </View>
       </View>

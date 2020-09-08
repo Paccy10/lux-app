@@ -10,4 +10,5 @@ export default Object.freeze({
   VIEW_PROFILE: 'View Profile',
   EDIT_PROFILE: 'Edit Profile',
   ALL_USERS: 'ALL_USERS',
+  COMMENTS: 'Comments',
 });

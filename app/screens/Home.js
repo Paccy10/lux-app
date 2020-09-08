@@ -79,6 +79,7 @@ const Home = (props) => {
               postKey={item.key}
               likes={item.likes}
               hasLiked={item.hasLiked}
+              comments={item.comments}
             />
           )}
           ItemSeparatorComponent={ListItemsSeparator}

@@ -45,6 +45,14 @@ export const fetchPosts = () => {
         snapshot.forEach((childSnapshot) => {
           const post = childSnapshot.val();
           post.key = childSnapshot.key;
+          const comments = [];
+          commentsSnap = childSnapshot.child('comments');
+          commentsSnap.forEach((childSnap) => {
+            const comment = childSnap.val();
+            comment.key = childSnap.key;
+            comments.push(comment);
+          });
+          post.comments = comments;
           const { uid } = getState().firebase.auth;
 
           const promise = firebase
@@ -95,6 +103,14 @@ export const fetchPost = (postKey) => {
       .then((snapshot) => {
         const post = snapshot.val();
         post.key = snapshot.key;
+        const comments = [];
+        commentsSnap = snapshot.child('comments');
+        commentsSnap.forEach((childSnap) => {
+          const comment = childSnap.val();
+          comment.key = childSnap.key;
+          comments.unshift(comment);
+        });
+        post.comments = comments;
         dispatch({
           type: actionTypes.FETCH_POST_SUCCESS,
           post,
