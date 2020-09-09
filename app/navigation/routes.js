@@ -12,4 +12,5 @@ export default Object.freeze({
   ALL_USERS: 'ALL_USERS',
   COMMENTS: 'Comments',
   RESET_PASSWORD: 'Reset Password',
+  USER_PROFILE: 'User Profile',
 });

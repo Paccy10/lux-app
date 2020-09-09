@@ -77,7 +77,9 @@ const PostItem = ({
                 ) : (
                   <MaterialCommunityIcons name='heart-outline' size={23} />
                 )}
-                <AppText style={styles.text}>{likes} Likes</AppText>
+                <AppText style={styles.text}>
+                  {likes} {likes === 1 ? 'Like' : 'Likes'}
+                </AppText>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -88,7 +90,8 @@ const PostItem = ({
               <View style={{ flexDirection: 'row' }}>
                 <MaterialCommunityIcons name='comment-outline' size={23} />
                 <AppText style={styles.text}>
-                  {comments.length} comments
+                  {comments.length}{' '}
+                  {comments.length === 1 ? 'Comment' : 'Comments'}
                 </AppText>
               </View>
             </TouchableWithoutFeedback>

@@ -9,6 +9,7 @@ import ViewProfileScreen from '../screens/Auth/ViewProfile';
 import EditProfileScreen from '../screens/Auth/EditProfile';
 import AllUsersScreen from '../screens/Users/AllUsers';
 import CommentsScreen from '../screens/Posts/Comments';
+import UserProfileScreen from '../screens/Users/UserProfile';
 import defaultNavigationOptions from './defaultOptions';
 import DrawerToggler from '../components/UI/AppDrawer/DrawerToggler';
 import RightHeaderButton from '../components/UI/RightHeaderButton';
@@ -55,6 +56,7 @@ const FeedNavigator = () => {
         options={{ headerTitle: 'Find Friends' }}
       />
       <Stack.Screen name={routes.COMMENTS} component={CommentsScreen} />
+      <Stack.Screen name={routes.USER_PROFILE} component={UserProfileScreen} />
     </Stack.Navigator>
   );
 };

@@ -5,6 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -19,6 +20,7 @@ import { fetchUsers, searchUser } from '../../store/actions/user';
 const AllUsers = ({ fetchUsers, searchUser, users, error, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -30,6 +32,12 @@ const AllUsers = ({ fetchUsers, searchUser, users, error, navigation }) => {
     setSearchLoading(true);
     await searchUser(query);
     setSearchLoading(false);
+  };
+
+  const loadUsersOnRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchUsers();
+    setIsRefreshing(false);
   };
 
   useEffect(() => {
@@ -73,15 +81,19 @@ const AllUsers = ({ fetchUsers, searchUser, users, error, navigation }) => {
           <FlatList
             data={users}
             keyExtractor={(user) => user.key}
-            renderItem={({ item }) => (
-              <FriendItem
-                fullname={item.fullname}
-                profileImage={item.profileImage.imageUrl}
-                status={item.status}
-              />
-            )}
+            renderItem={({ item }) => <FriendItem user={item} />}
             ItemSeparatorComponent={ListItemsSeparator}
             style={styles.listContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={loadUsersOnRefresh}
+                tintColor={colors.primary}
+                titleColor={colors.primary}
+                title='Pull to refresh'
+                colors={[colors.primary]}
+              />
+            }
           />
         ) : (
           <View style={styles.noData}>

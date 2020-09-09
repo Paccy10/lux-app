@@ -1,28 +1,33 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 
 import AppText from '../AppText';
 import colors from '../../../config/colors';
+import routes from '../../../navigation/routes';
 
-const FriendItem = ({ profileImage, fullname, status }) => {
+const FriendItem = ({ user }) => {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => navigation.navigate(routes.USER_PROFILE, user)}
+    >
       <View style={styles.container}>
         <Avatar
           rounded
           size='medium'
           source={
-            profileImage
-              ? { uri: profileImage }
+            user.profileImage.imageUrl
+              ? { uri: user.profileImage.imageUrl }
               : require('../../../assets/profile.png')
           }
           avatarStyle={styles.avatar}
         />
         <View style={styles.details}>
-          <AppText style={styles.name}>{fullname}</AppText>
+          <AppText style={styles.name}>{user.fullname}</AppText>
           <AppText style={styles.status} numberOfLines={1}>
-            {status}
+            {user.status}
           </AppText>
         </View>
       </View>
