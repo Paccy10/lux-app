@@ -17,6 +17,7 @@ import {
   checkFriendRequest,
   cancelFriendRequest,
   acceptFriendRequest,
+  unFriendUser,
 } from '../../store/actions/friend';
 import colors from '../../config/colors';
 
@@ -27,6 +28,7 @@ const UserProfile = ({
   friendshipCurrentState,
   cancelFriendRequest,
   acceptFriendRequest,
+  unFriendUser,
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadingCheck, setLoadingCheck] = useState(false);
@@ -50,6 +52,9 @@ const UserProfile = ({
     } else if (friendshipCurrentState === 'request_received') {
       await acceptFriendRequest(profile.key);
       Alert.alert('Success', 'Friend request successfully accepeted');
+    } else {
+      await unFriendUser(profile.key);
+      Alert.alert('Success', 'Friendship successfully stopped');
     }
     setLoading(false);
   };
@@ -189,6 +194,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(cancelFriendRequest(receiverId)),
   acceptFriendRequest: (receiverId) =>
     dispatch(acceptFriendRequest(receiverId)),
+  unFriendUser: (userId) => dispatch(unFriendUser(userId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);

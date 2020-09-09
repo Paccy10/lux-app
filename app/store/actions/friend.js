@@ -134,3 +134,30 @@ export const acceptFriendRequest = (receiverId) => {
       );
   };
 };
+
+export const unFriendUser = (userId) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.UNFRIEND_USER_START });
+    const senderId = getState().firebase.auth.uid;
+    const firebase = getFirebase();
+    const ref = firebase.database().ref('friends');
+
+    return ref
+      .child(senderId)
+      .child(userId)
+      .remove()
+      .then(() => {
+        ref
+          .child(userId)
+          .child(senderId)
+          .remove()
+          .then(() => {
+            dispatch({ type: actionTypes.UNFRIEND_USER_SUCCESS });
+          })
+          .catch((error) =>
+            dispatch({ type: actionTypes.UNFRIEND_USER_FAIL, error })
+          );
+      })
+      .catch((err) => dispatch({ type: actionTypes.UNFRIEND_USER_FAIL, err }));
+  };
+};
