@@ -36,26 +36,35 @@ export const checkFriendRequest = (receiverId) => {
     dispatch({ type: actionTypes.CHECK_FRIEND_REQUEST_START });
     const senderId = getState().firebase.auth.uid;
     const firebase = getFirebase();
-    const ref = firebase.database().ref('friendRequests');
+    const requestsRef = firebase.database().ref('friendRequests');
+    const friendsRef = firebase.database().ref('friends');
 
-    return ref
+    return requestsRef
       .child(senderId)
       .once('value')
-      .then((snapshot) => {
+      .then(async (snapshot) => {
+        let currentState = 'not_friends';
         if (snapshot.exists()) {
           const requestType = snapshot
             .child(receiverId)
             .child('request_type')
             .val();
-          let currentState = '';
           if (requestType === 'sent') {
             currentState = 'request_sent';
+          } else if (requestType === 'received') {
+            currentState = 'request_received';
           }
-          dispatch({
-            type: actionTypes.CHECK_FRIEND_REQUEST_SUCCESS,
-            currentState,
-          });
         }
+        const friendSnapshot = await friendsRef.child(senderId).once('value');
+        if (friendSnapshot.exists()) {
+          if (friendSnapshot.child(receiverId).hasChild('date')) {
+            currentState = 'friends';
+          }
+        }
+        dispatch({
+          type: actionTypes.CHECK_FRIEND_REQUEST_SUCCESS,
+          currentState,
+        });
       })
       .catch((error) =>
         dispatch({ type: actionTypes.CHECK_FRIEND_REQUEST_FAIL, error })
@@ -88,6 +97,40 @@ export const cancelFriendRequest = (receiverId) => {
       })
       .catch((err) =>
         dispatch({ type: actionTypes.CANCEL_FRIEND_REQUEST_FAIL, err })
+      );
+  };
+};
+
+export const acceptFriendRequest = (receiverId) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.ACCEPT_FRIEND_REQUEST_START });
+    const senderId = getState().firebase.auth.uid;
+    const firebase = getFirebase();
+    const requestsRef = firebase.database().ref('friendRequests');
+    const friendsRef = firebase.database().ref('friends');
+
+    return friendsRef
+      .child(senderId)
+      .child(receiverId)
+      .child('date')
+      .set(new Date().toString())
+      .then(() => {
+        friendsRef
+          .child(receiverId)
+          .child(senderId)
+          .child('date')
+          .set(new Date().toString())
+          .then(async () => {
+            await requestsRef.child(senderId).child(receiverId).remove();
+            await requestsRef.child(receiverId).child(senderId).remove();
+            dispatch({ type: actionTypes.ACCEPT_FRIEND_REQUEST_SUCCESS });
+          })
+          .catch((error) =>
+            dispatch({ type: actionTypes.ACCEPT_FRIEND_REQUEST_FAIL, error })
+          );
+      })
+      .catch((err) =>
+        dispatch({ type: actionTypes.ACCEPT_FRIEND_REQUEST_FAIL, err })
       );
   };
 };

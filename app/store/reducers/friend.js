@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/types';
 
 const initialState = {
-  friendshipCurrentState: '',
+  friendshipCurrentState: 'not_friends',
   error: null,
 };
 
@@ -10,10 +10,9 @@ export default (state = initialState, action) => {
     case actionTypes.SEND_FRIEND_REQUEST_START:
     case actionTypes.CHECK_FRIEND_REQUEST_START:
     case actionTypes.CANCEL_FRIEND_REQUEST_START:
-    case actionTypes.CANCEL_FRIEND_REQUEST_SUCCESS:
+    case actionTypes.ACCEPT_FRIEND_REQUEST_START:
       return {
         ...state,
-        friendshipCurrentState: '',
         error: null,
       };
 
@@ -29,7 +28,6 @@ export default (state = initialState, action) => {
     case actionTypes.CANCEL_FRIEND_REQUEST_FAIL:
       return {
         ...state,
-        friendshipCurrentState: '',
         error: action.error.message,
       };
 
@@ -37,6 +35,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         friendshipCurrentState: action.currentState,
+        error: null,
+      };
+
+    case actionTypes.CANCEL_FRIEND_REQUEST_SUCCESS:
+      return initialState;
+
+    case actionTypes.ACCEPT_FRIEND_REQUEST_SUCCESS:
+      return {
+        ...state,
+        friendshipCurrentState: 'friends',
         error: null,
       };
 

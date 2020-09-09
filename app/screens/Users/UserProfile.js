@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, ScrollView, View, Alert } from 'react-native';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -10,7 +16,9 @@ import {
   sendFriendRequest,
   checkFriendRequest,
   cancelFriendRequest,
+  acceptFriendRequest,
 } from '../../store/actions/friend';
+import colors from '../../config/colors';
 
 const UserProfile = ({
   route,
@@ -18,6 +26,7 @@ const UserProfile = ({
   checkFriendRequest,
   friendshipCurrentState,
   cancelFriendRequest,
+  acceptFriendRequest,
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadingCheck, setLoadingCheck] = useState(false);
@@ -32,12 +41,15 @@ const UserProfile = ({
 
   const sendOrCancelRequest = async () => {
     setLoading(true);
-    if (friendshipCurrentState === '') {
+    if (friendshipCurrentState === 'not_friends') {
       await sendFriendRequest(profile.key);
       Alert.alert('Success', 'Friend request successfully sent');
-    } else {
+    } else if (friendshipCurrentState === 'request_sent') {
       await cancelFriendRequest(profile.key);
       Alert.alert('Success', 'Friend request successfully cancelled');
+    } else if (friendshipCurrentState === 'request_received') {
+      await acceptFriendRequest(profile.key);
+      Alert.alert('Success', 'Friend request successfully accepeted');
     }
     setLoading(false);
   };
@@ -45,6 +57,17 @@ const UserProfile = ({
   useEffect(() => {
     loadCheckRequest();
   }, []);
+
+  let firstButtonText = '';
+  if (friendshipCurrentState === 'request_sent') {
+    firstButtonText = 'Cancel friend request';
+  } else if (friendshipCurrentState === 'request_received') {
+    firstButtonText = 'Accept friend request';
+  } else if (friendshipCurrentState === 'not_friends') {
+    firstButtonText = 'Send friend request';
+  } else {
+    firstButtonText = 'Unfriend this user';
+  }
 
   return (
     <ScrollView>
@@ -105,30 +128,29 @@ const UserProfile = ({
             subheader={profile.status}
           />
         </View>
-        {!loadingCheck && (
-          <View style={styles.buttons}>
-            <AppButton
-              style={styles.button}
-              title={
-                friendshipCurrentState !== 'request_sent'
-                  ? 'Send friend request'
-                  : 'Cancel friend request'
-              }
-              color='primary'
-              onPress={sendOrCancelRequest}
-              loading={loading}
-              disabled={loading}
-            />
-            {friendshipCurrentState !== 'request_sent' &&
-              friendshipCurrentState !== '' && (
+        <View style={styles.buttons}>
+          {loadingCheck ? (
+            <ActivityIndicator color={colors.primary} />
+          ) : (
+            <Fragment>
+              <AppButton
+                style={styles.button}
+                title={firstButtonText}
+                color='primary'
+                onPress={sendOrCancelRequest}
+                loading={loading}
+                disabled={loading}
+              />
+              {friendshipCurrentState === 'request_received' && (
                 <AppButton
                   style={styles.button}
                   title='Decline friend request'
                   color='secondary'
                 />
               )}
-          </View>
-        )}
+            </Fragment>
+          )}
+        </View>
       </View>
     </ScrollView>
   );
@@ -165,6 +187,8 @@ const mapDispatchToProps = (dispatch) => ({
   checkFriendRequest: (receiverId) => dispatch(checkFriendRequest(receiverId)),
   cancelFriendRequest: (receiverId) =>
     dispatch(cancelFriendRequest(receiverId)),
+  acceptFriendRequest: (receiverId) =>
+    dispatch(acceptFriendRequest(receiverId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
