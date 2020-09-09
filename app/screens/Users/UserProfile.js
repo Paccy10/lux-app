@@ -18,6 +18,7 @@ import {
   cancelFriendRequest,
   acceptFriendRequest,
   unFriendUser,
+  declineFriendRequest,
 } from '../../store/actions/friend';
 import colors from '../../config/colors';
 
@@ -29,8 +30,10 @@ const UserProfile = ({
   cancelFriendRequest,
   acceptFriendRequest,
   unFriendUser,
+  declineFriendRequest,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [loadingDecline, setLoadingDecline] = useState(false);
   const [loadingCheck, setLoadingCheck] = useState(false);
 
   const profile = route.params;
@@ -57,6 +60,12 @@ const UserProfile = ({
       Alert.alert('Success', 'Friendship successfully stopped');
     }
     setLoading(false);
+  };
+
+  const declineRequest = async () => {
+    setLoadingDecline(true);
+    await declineFriendRequest(profile.key);
+    setLoadingDecline(false);
   };
 
   useEffect(() => {
@@ -144,13 +153,16 @@ const UserProfile = ({
                 color='primary'
                 onPress={sendOrCancelRequest}
                 loading={loading}
-                disabled={loading}
+                disabled={loading || loadingDecline}
               />
               {friendshipCurrentState === 'request_received' && (
                 <AppButton
                   style={styles.button}
                   title='Decline friend request'
                   color='secondary'
+                  onPress={declineRequest}
+                  loading={loadingDecline}
+                  disabled={loading || loadingDecline}
                 />
               )}
             </Fragment>
@@ -194,6 +206,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(cancelFriendRequest(receiverId)),
   acceptFriendRequest: (receiverId) =>
     dispatch(acceptFriendRequest(receiverId)),
+  declineFriendRequest: (receiverId) =>
+    dispatch(declineFriendRequest(receiverId)),
   unFriendUser: (userId) => dispatch(unFriendUser(userId)),
 });
 

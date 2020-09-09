@@ -135,6 +135,35 @@ export const acceptFriendRequest = (receiverId) => {
   };
 };
 
+export const declineFriendRequest = (receiverId) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.DECLINE_FRIEND_REQUEST_START });
+    const senderId = getState().firebase.auth.uid;
+    const firebase = getFirebase();
+    const ref = firebase.database().ref('friendRequests');
+
+    return ref
+      .child(senderId)
+      .child(receiverId)
+      .remove()
+      .then(() => {
+        ref
+          .child(receiverId)
+          .child(senderId)
+          .remove()
+          .then(() => {
+            dispatch({ type: actionTypes.DECLINE_FRIEND_REQUEST_SUCCESS });
+          })
+          .catch((error) =>
+            dispatch({ type: actionTypes.DECLINE_FRIEND_REQUEST_FAIL, error })
+          );
+      })
+      .catch((err) =>
+        dispatch({ type: actionTypes.DECLINE_FRIEND_REQUEST_FAIL, err })
+      );
+  };
+};
+
 export const unFriendUser = (userId) => {
   return async (dispatch, getState, { getFirebase }) => {
     dispatch({ type: actionTypes.UNFRIEND_USER_START });
