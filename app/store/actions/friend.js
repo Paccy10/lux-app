@@ -62,3 +62,32 @@ export const checkFriendRequest = (receiverId) => {
       );
   };
 };
+
+export const cancelFriendRequest = (receiverId) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.CANCEL_FRIEND_REQUEST_START });
+    const senderId = getState().firebase.auth.uid;
+    const firebase = getFirebase();
+    const ref = firebase.database().ref('friendRequests');
+
+    return ref
+      .child(senderId)
+      .child(receiverId)
+      .remove()
+      .then(() => {
+        ref
+          .child(receiverId)
+          .child(senderId)
+          .remove()
+          .then(() => {
+            dispatch({ type: actionTypes.CANCEL_FRIEND_REQUEST_SUCCESS });
+          })
+          .catch((error) =>
+            dispatch({ type: actionTypes.CANCEL_FRIEND_REQUEST_FAIL, error })
+          );
+      })
+      .catch((err) =>
+        dispatch({ type: actionTypes.CANCEL_FRIEND_REQUEST_FAIL, err })
+      );
+  };
+};

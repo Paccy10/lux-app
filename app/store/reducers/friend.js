@@ -9,6 +9,8 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SEND_FRIEND_REQUEST_START:
     case actionTypes.CHECK_FRIEND_REQUEST_START:
+    case actionTypes.CANCEL_FRIEND_REQUEST_START:
+    case actionTypes.CANCEL_FRIEND_REQUEST_SUCCESS:
       return {
         ...state,
         friendshipCurrentState: '',
@@ -24,6 +26,7 @@ export default (state = initialState, action) => {
 
     case actionTypes.SEND_FRIEND_REQUEST_FAIL:
     case actionTypes.CHECK_FRIEND_REQUEST_FAIL:
+    case actionTypes.CANCEL_FRIEND_REQUEST_FAIL:
       return {
         ...state,
         friendshipCurrentState: '',

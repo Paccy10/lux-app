@@ -9,6 +9,7 @@ import AppButton from '../../components/UI/AppButton';
 import {
   sendFriendRequest,
   checkFriendRequest,
+  cancelFriendRequest,
 } from '../../store/actions/friend';
 
 const UserProfile = ({
@@ -16,6 +17,7 @@ const UserProfile = ({
   sendFriendRequest,
   checkFriendRequest,
   friendshipCurrentState,
+  cancelFriendRequest,
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadingCheck, setLoadingCheck] = useState(false);
@@ -28,11 +30,16 @@ const UserProfile = ({
     setLoadingCheck(false);
   });
 
-  const sendRequest = async () => {
+  const sendOrCancelRequest = async () => {
     setLoading(true);
-    await sendFriendRequest(profile.key);
+    if (friendshipCurrentState === '') {
+      await sendFriendRequest(profile.key);
+      Alert.alert('Success', 'Friend request successfully sent');
+    } else {
+      await cancelFriendRequest(profile.key);
+      Alert.alert('Success', 'Friend request successfully cancelled');
+    }
     setLoading(false);
-    Alert.alert('Success', 'Friend request successfully sent');
   };
 
   useEffect(() => {
@@ -108,7 +115,7 @@ const UserProfile = ({
                   : 'Cancel friend request'
               }
               color='primary'
-              onPress={sendRequest}
+              onPress={sendOrCancelRequest}
               loading={loading}
               disabled={loading}
             />
@@ -156,6 +163,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   sendFriendRequest: (receiverId) => dispatch(sendFriendRequest(receiverId)),
   checkFriendRequest: (receiverId) => dispatch(checkFriendRequest(receiverId)),
+  cancelFriendRequest: (receiverId) =>
+    dispatch(cancelFriendRequest(receiverId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
