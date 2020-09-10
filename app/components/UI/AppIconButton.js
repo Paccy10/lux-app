@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   StyleSheet,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
   View,
   ActivityIndicator,
 } from 'react-native';
@@ -18,13 +18,13 @@ const AppIconButton = ({ onPress, style, loading, disabled }) => {
         backgroundColor: disabled ? colors.light : colors.primary,
       }}
     >
-      <TouchableWithoutFeedback onPress={onPress} disabled={disabled}>
+      <TouchableOpacity onPress={onPress} disabled={disabled}>
         {loading ? (
           <ActivityIndicator color={colors.primary} />
         ) : (
           <MaterialCommunityIcons name='send' color={colors.white} size={23} />
         )}
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     </View>
   );
 };

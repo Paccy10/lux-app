@@ -14,4 +14,5 @@ export default Object.freeze({
   RESET_PASSWORD: 'Reset Password',
   USER_PROFILE: 'User Profile',
   MY_FRIENDS: 'My Friends',
+  CHAT: 'Chat',
 });

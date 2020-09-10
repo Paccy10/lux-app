@@ -5,14 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import AppText from '../AppText';
 import colors from '../../../config/colors';
-import routes from '../../../navigation/routes';
 
-const FriendItem = ({ user }) => {
+const FriendItem = ({ user, onPress }) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate(routes.USER_PROFILE, user)}
-    >
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
         <Avatar
           rounded

@@ -5,13 +5,20 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../../config/colors';
 import defaultStyles from '../../config/styles';
 
-const AppTextInput = ({ icon, loadingIcon, width = '100%', ...otherProps }) => {
+const AppTextInput = ({
+  icon,
+  loadingIcon,
+  width = '100%',
+  style,
+  ...otherProps
+}) => {
   return (
     <View
       style={[
         styles.container,
         { width },
         { display: otherProps.hidden ? 'none' : 'flex' },
+        style,
       ]}
     >
       {icon && (

@@ -1,23 +1,30 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import {
   StyleSheet,
   ActivityIndicator,
   View,
   FlatList,
   RefreshControl,
+  Modal,
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import AppText from '../../components/UI/AppText';
 import AppButton from '../../components/UI/AppButton';
 import FriendItem from '../../components/UI/lists/FriendItem';
 import ListItemsSeparator from '../../components/UI/lists/ListItemsSeparator';
 import colors from '../../config/colors';
+import routes from '../../navigation/routes';
 import { fetchFriends } from '../../store/actions/friend';
 
-const Friends = ({ fetchFriends, friends, error }) => {
+const Friends = ({ fetchFriends, friends, error, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [user, setUser] = useState({});
 
   const loadFriends = useCallback(async () => {
     setLoading(true);
@@ -52,22 +59,76 @@ const Friends = ({ fetchFriends, friends, error }) => {
           />
         </View>
       ) : friends.length > 0 ? (
-        <FlatList
-          data={friends}
-          keyExtractor={(friend) => friend.key}
-          renderItem={({ item }) => <FriendItem user={item} />}
-          ItemSeparatorComponent={ListItemsSeparator}
-          style={styles.listContainer}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={loadFriendsOnRefresh}
-              tintColor={colors.primary}
-              titleColor={colors.primary}
-              colors={[colors.primary]}
-            />
-          }
-        />
+        <Fragment>
+          <FlatList
+            data={friends}
+            keyExtractor={(friend) => friend.key}
+            renderItem={({ item }) => (
+              <FriendItem
+                user={item}
+                onPress={() => {
+                  setModalVisible(true);
+                  setUser(item);
+                }}
+              />
+            )}
+            ItemSeparatorComponent={ListItemsSeparator}
+            style={styles.listContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={loadFriendsOnRefresh}
+                tintColor={colors.primary}
+                titleColor={colors.primary}
+                colors={[colors.primary]}
+              />
+            }
+          />
+          <Modal visible={modalVisible} transparent>
+            <SafeAreaView style={{ flex: 1 }}>
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={() => setModalVisible(false)}
+              >
+                <View style={styles.backdrop}></View>
+              </TouchableOpacity>
+              <View style={styles.modal}>
+                <AppText style={styles.modalTitle}>Select Options</AppText>
+                <ListItemsSeparator />
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate(routes.USER_PROFILE, user);
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name='account'
+                    size={23}
+                    style={styles.icon}
+                  />
+                  <AppText
+                    style={styles.modalButtonText}
+                  >{`${user.fullname}'s Profile`}</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate(routes.CHAT, user);
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name='email'
+                    size={23}
+                    style={styles.icon}
+                  />
+                  <AppText style={styles.modalButtonText}>Send Message</AppText>
+                </TouchableOpacity>
+              </View>
+            </SafeAreaView>
+          </Modal>
+        </Fragment>
       ) : (
         <View style={styles.noData}>
           <AppText style={styles.noDataText}>
@@ -107,6 +168,36 @@ const styles = StyleSheet.create({
   noDataText: {
     color: colors.medium,
     fontStyle: 'italic',
+  },
+  backdrop: {
+    backgroundColor: '#000000aa',
+    flex: 1,
+  },
+  modal: {
+    backgroundColor: colors.white,
+    width: '80%',
+    position: 'absolute',
+    top: '40%',
+    alignSelf: 'center',
+  },
+  modalButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  icon: {
+    color: colors.medium,
+    marginRight: 10,
+  },
+  modalButtonText: {
+    color: colors.medium,
   },
 });
 

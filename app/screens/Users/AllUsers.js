@@ -15,6 +15,7 @@ import AppButton from '../../components/UI/AppButton';
 import FriendItem from '../../components/UI/lists/FriendItem';
 import ListItemsSeparator from '../../components/UI/lists/ListItemsSeparator';
 import colors from '../../config/colors';
+import routes from '../../navigation/routes';
 import { fetchUsers, searchUser } from '../../store/actions/user';
 
 const AllUsers = ({ fetchUsers, searchUser, users, error, navigation }) => {
@@ -81,7 +82,12 @@ const AllUsers = ({ fetchUsers, searchUser, users, error, navigation }) => {
           <FlatList
             data={users}
             keyExtractor={(user) => user.key}
-            renderItem={({ item }) => <FriendItem user={item} />}
+            renderItem={({ item }) => (
+              <FriendItem
+                user={item}
+                onPress={() => navigation.navigate(routes.USER_PROFILE, item)}
+              />
+            )}
             ItemSeparatorComponent={ListItemsSeparator}
             style={styles.listContainer}
             refreshControl={

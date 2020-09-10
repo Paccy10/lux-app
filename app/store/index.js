@@ -9,6 +9,7 @@ import userReducer from './reducers/user';
 import likeReducer from './reducers/like';
 import commentReducer from './reducers/comment';
 import friendReducer from './reducers/friend';
+import messageReducer from './reducers/message';
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   like: likeReducer,
   comment: commentReducer,
   friend: friendReducer,
+  message: messageReducer
 });
 
 const store = createStore(
