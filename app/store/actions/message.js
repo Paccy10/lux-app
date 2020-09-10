@@ -37,3 +37,28 @@ export const sendMessage = (receiverId, message) => {
       );
   };
 };
+
+export const fetchMessages = (receiverId) => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.FETCH_MESSAGES_START });
+    const senderId = getState().firebase.auth.uid;
+    const firebase = getFirebase();
+    const ref = firebase.database().ref('messages');
+    return ref
+      .child(senderId)
+      .child(receiverId)
+      .on(
+        'value',
+        (snapshot) => {
+          const messages = [];
+          snapshot.forEach((childSnapshot) => {
+            const message = childSnapshot.val();
+            message.key = childSnapshot.key;
+            messages.unshift(message);
+          });
+          dispatch({ type: actionTypes.FETCH_MESSAGES_SUCCESS, messages });
+        },
+        (error) => dispatch({ type: actionTypes.FETCH_MESSAGES_FAIL, error })
+      );
+  };
+};

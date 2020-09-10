@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '40%',
     alignSelf: 'center',
+    borderRadius: 10,
   },
   modalButton: {
     paddingHorizontal: 20,
