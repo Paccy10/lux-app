@@ -130,7 +130,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   noData: {
+    height: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   noDataText: {
     color: colors.medium,

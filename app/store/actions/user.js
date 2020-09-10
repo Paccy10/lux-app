@@ -36,6 +36,8 @@ export const searchUser = (query) => {
     dispatch({ type: actionTypes.SEARCH_USER_START });
 
     const firebase = getFirebase();
+    const { uid } = getState().firebase.auth;
+
     return firebase
       .database()
       .ref('users')
@@ -48,7 +50,9 @@ export const searchUser = (query) => {
         snapshot.forEach((childSnapshot) => {
           const user = childSnapshot.val();
           user.key = childSnapshot.key;
-          users.unshift(user);
+          if (user.key !== uid) {
+            users.unshift(user);
+          }
         });
         dispatch({
           type: actionTypes.SEARCH_USER_SUCCESS,

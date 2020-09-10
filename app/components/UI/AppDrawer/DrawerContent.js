@@ -41,8 +41,13 @@ const DrawerContent = (props) => {
         onPress={() => navigation.navigate(routes.VIEW_PROFILE)}
       />
       <AppDrawerItem
-        label='Friends'
+        label='My Friends'
         icon='account-group'
+        onPress={() => navigation.navigate(routes.MY_FRIENDS)}
+      />
+      <AppDrawerItem
+        label='Find Friends'
+        icon='account-search'
         onPress={() => navigation.navigate(routes.ALL_USERS)}
       />
       <AppDrawerItem

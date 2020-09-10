@@ -26,7 +26,7 @@ export const sendFriendRequest = (receiverId) => {
           );
       })
       .catch((err) =>
-        dispatch({ type: actionTypes.SEND_FRIEND_REQUEST_FAIL, err })
+        dispatch({ type: actionTypes.SEND_FRIEND_REQUEST_FAIL, error: err })
       );
   };
 };
@@ -96,7 +96,7 @@ export const cancelFriendRequest = (receiverId) => {
           );
       })
       .catch((err) =>
-        dispatch({ type: actionTypes.CANCEL_FRIEND_REQUEST_FAIL, err })
+        dispatch({ type: actionTypes.CANCEL_FRIEND_REQUEST_FAIL, error: err })
       );
   };
 };
@@ -130,7 +130,7 @@ export const acceptFriendRequest = (receiverId) => {
           );
       })
       .catch((err) =>
-        dispatch({ type: actionTypes.ACCEPT_FRIEND_REQUEST_FAIL, err })
+        dispatch({ type: actionTypes.ACCEPT_FRIEND_REQUEST_FAIL, error: err })
       );
   };
 };
@@ -159,7 +159,7 @@ export const declineFriendRequest = (receiverId) => {
           );
       })
       .catch((err) =>
-        dispatch({ type: actionTypes.DECLINE_FRIEND_REQUEST_FAIL, err })
+        dispatch({ type: actionTypes.DECLINE_FRIEND_REQUEST_FAIL, error: err })
       );
   };
 };
@@ -187,6 +187,45 @@ export const unFriendUser = (userId) => {
             dispatch({ type: actionTypes.UNFRIEND_USER_FAIL, error })
           );
       })
-      .catch((err) => dispatch({ type: actionTypes.UNFRIEND_USER_FAIL, err }));
+      .catch((err) =>
+        dispatch({ type: actionTypes.UNFRIEND_USER_FAIL, error: err })
+      );
+  };
+};
+
+export const fetchFriends = () => {
+  return async (dispatch, getState, { getFirebase }) => {
+    dispatch({ type: actionTypes.FETCH_FRIENDS_START });
+    const { uid } = getState().firebase.auth;
+    const firebase = getFirebase();
+    const friendsRef = firebase.database().ref('friends');
+    const usersRef = firebase.database().ref('users');
+
+    return friendsRef
+      .child(uid)
+      .once('value')
+      .then(async (snapshot) => {
+        const friends = [];
+        const reads = [];
+        snapshot.forEach((childSnapshot) => {
+          const promise = usersRef
+            .child(childSnapshot.key)
+            .once('value')
+            .then((userSnapshot) => {
+              const friend = userSnapshot.val();
+              friend.key = userSnapshot.key;
+              friends.unshift(friend);
+            })
+            .catch((error) =>
+              dispatch({ type: actionTypes.FETCH_FRIENDS_FAIL, error })
+            );
+          reads.push(promise);
+        });
+        await Promise.all(reads);
+        dispatch({ type: actionTypes.FETCH_FRIENDS_SUCCESS, friends });
+      })
+      .catch((err) =>
+        dispatch({ type: actionTypes.FETCH_FRIENDS_FAIL, error: err })
+      );
   };
 };

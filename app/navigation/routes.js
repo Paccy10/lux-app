@@ -13,4 +13,5 @@ export default Object.freeze({
   COMMENTS: 'Comments',
   RESET_PASSWORD: 'Reset Password',
   USER_PROFILE: 'User Profile',
+  MY_FRIENDS: 'My Friends',
 });

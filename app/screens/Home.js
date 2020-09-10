@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import {
   View,
   StyleSheet,
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   Alert,
@@ -20,15 +19,8 @@ import routes from '../navigation/routes';
 const Home = (props) => {
   const { error, fetchPosts, posts, navigation, dispatch } = props;
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const loadPosts = useCallback(async () => {
-    setLoading(true);
-    await fetchPosts();
-    setLoading(false);
-  });
-
-  const loadPostsonRefresh = async () => {
+  const loadPosts = async () => {
     setIsRefreshing(true);
     await fetchPosts();
     setIsRefreshing(false);
@@ -48,11 +40,7 @@ const Home = (props) => {
 
   return (
     <Fragment>
-      {loading ? (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator color={colors.primary} size='large' />
-        </View>
-      ) : error ? (
+      {error ? (
         <View style={styles.error}>
           <AppText style={styles.text}>Couldn't retrieve the posts.</AppText>
           <AppButton
@@ -86,10 +74,9 @@ const Home = (props) => {
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
-              onRefresh={loadPostsonRefresh}
+              onRefresh={loadPosts}
               tintColor={colors.primary}
               titleColor={colors.primary}
-              title='Pull to refresh'
               colors={[colors.primary]}
             />
           }
