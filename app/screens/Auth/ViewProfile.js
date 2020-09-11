@@ -1,13 +1,37 @@
-import React from 'react';
-import { StyleSheet, ScrollView, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useCallback, useState, Fragment } from 'react';
+import { StyleSheet, ScrollView, View, ActivityIndicator } from 'react-native';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 import ProfileImage from '../../components/UI/images/ProfileImage';
 import ProfileItem from '../../components/UI/lists/ProfileItem';
+import AppButton from '../../components/UI/AppButton';
+import { fetchFriends } from '../../store/actions/friend';
+import { fetchUserPosts } from '../../store/actions/user';
+import routes from '../../navigation/routes';
+import colors from '../../config/colors';
 
-const ViewProfile = () => {
-  const profile = useSelector((state) => state.firebase.profile);
+const ViewProfile = ({
+  profile,
+  friends,
+  fetchFriends,
+  navigation,
+  fetchUserPosts,
+  posts,
+}) => {
+  const [loading, setLoading] = useState(false);
+
+  const loadFriendsAndPosts = useCallback(async () => {
+    setLoading(true);
+    await fetchFriends();
+    await fetchUserPosts();
+    setLoading(false);
+  });
+
+  useEffect(() => {
+    loadFriendsAndPosts();
+  }, []);
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -67,6 +91,27 @@ const ViewProfile = () => {
             subheader={profile.status}
           />
         </View>
+        {loading ? (
+          <View style={styles.loader}>
+            <ActivityIndicator color={colors.primary} />
+          </View>
+        ) : (
+          <View style={styles.buttons}>
+            <AppButton
+              style={styles.button}
+              title={`${friends.length} ${
+                friends.length === 1 ? 'Friend' : 'Friends'
+              }`}
+              color='primary'
+              onPress={() => navigation.navigate(routes.MY_FRIENDS)}
+            />
+            <AppButton
+              style={styles.button}
+              title={`${posts.length} ${posts.length === 1 ? 'Post' : 'Posts'}`}
+              color='primary'
+            />
+          </View>
+        )}
       </View>
     </ScrollView>
   );
@@ -83,6 +128,29 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 20,
   },
+  buttons: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  button: {
+    width: '45%',
+  },
+  loader: {
+    padding: 20,
+  },
 });
 
-export default ViewProfile;
+const mapStateToProps = (state) => ({
+  profile: state.firebase.profile,
+  friends: state.friend.friends,
+  posts: state.post.posts,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchFriends: () => dispatch(fetchFriends()),
+  fetchUserPosts: () => dispatch(fetchUserPosts()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewProfile);

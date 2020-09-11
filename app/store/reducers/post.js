@@ -12,6 +12,7 @@ export default (state = initialState, action) => {
     case actionTypes.FETCH_POST_START:
     case actionTypes.DELETE_POST_START:
     case actionTypes.UPDATE_POST_START:
+    case actionTypes.FETCH_USER_POSTS_START:
       return {
         ...state,
         error: null,
@@ -30,6 +31,7 @@ export default (state = initialState, action) => {
     case actionTypes.FETCH_POSTS_FAIL:
     case actionTypes.DELETE_POST_FAIL:
     case actionTypes.UPDATE_POST_FAIL:
+    case actionTypes.FETCH_USER_POSTS_FAIL:
       return {
         ...state,
         error: action.error.message,
@@ -43,6 +45,7 @@ export default (state = initialState, action) => {
       };
 
     case actionTypes.FETCH_POSTS_SUCCESS:
+    case actionTypes.FETCH_USER_POSTS_SUCCESS:
       return {
         ...state,
         error: null,
