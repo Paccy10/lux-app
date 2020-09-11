@@ -109,6 +109,7 @@ const ViewProfile = ({
               style={styles.button}
               title={`${posts.length} ${posts.length === 1 ? 'Post' : 'Posts'}`}
               color='primary'
+              onPress={() => navigation.navigate(routes.MY_POSTS)}
             />
           </View>
         )}

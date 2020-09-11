@@ -12,6 +12,7 @@ import CommentsScreen from '../screens/Posts/Comments';
 import UserProfileScreen from '../screens/Users/UserProfile';
 import FriendsScreen from '../screens/Users/Friends';
 import ChatScreen from '../screens/Users/Chat';
+import PostsScreen from '../screens/Users/Posts';
 import defaultNavigationOptions from './defaultOptions';
 import DrawerToggler from '../components/UI/AppDrawer/DrawerToggler';
 import RightHeaderButton from '../components/UI/RightHeaderButton';
@@ -66,6 +67,7 @@ const FeedNavigator = () => {
         component={ChatScreen}
         options={{ headerTitle: (props) => <ChatHeaderTitle {...props} /> }}
       />
+      <Stack.Screen name={routes.MY_POSTS} component={PostsScreen} />
     </Stack.Navigator>
   );
 };

@@ -8,22 +8,29 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import PostItem from '../components/UI/lists/PostItem';
-import AppText from '../components/UI/AppText';
-import AppButton from '../components/UI/AppButton';
-import ListItemsSeparator from '../components/UI/lists/ListItemsSeparator';
-import { fetchPosts } from '../store/actions/post';
-import { likePost } from '../store/actions/like';
-import colors from '../config/colors';
-import routes from '../navigation/routes';
+import PostItem from '../../components/UI/lists/PostItem';
+import AppText from '../../components/UI/AppText';
+import AppButton from '../../components/UI/AppButton';
+import ListItemsSeparator from '../../components/UI/lists/ListItemsSeparator';
+import { fetchUserPosts } from '../../store/actions/user';
+import { likeOwnPost } from '../../store/actions/like';
+import colors from '../../config/colors';
+import routes from '../../navigation/routes';
 
 const Home = (props) => {
-  const { error, fetchPosts, posts, navigation, dispatch, likePost } = props;
+  const {
+    error,
+    fetchUserPosts,
+    posts,
+    navigation,
+    dispatch,
+    likeOwnPost,
+  } = props;
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const loadPosts = async () => {
     setIsRefreshing(true);
-    await fetchPosts();
+    await fetchUserPosts();
     setIsRefreshing(false);
   };
 
@@ -69,7 +76,7 @@ const Home = (props) => {
               likes={item.likes}
               hasLiked={item.hasLiked}
               comments={item.comments}
-              onLikePost={() => likePost(item.key)}
+              onLikePost={() => likeOwnPost(item.key)}
             />
           )}
           ItemSeparatorComponent={ListItemsSeparator}
@@ -111,8 +118,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchPosts: () => dispatch(fetchPosts()),
-  likePost: (postKey) => dispatch(likePost(postKey)),
+  fetchUserPosts: () => dispatch(fetchUserPosts()),
+  likeOwnPost: (postKey) => dispatch(likeOwnPost(postKey)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

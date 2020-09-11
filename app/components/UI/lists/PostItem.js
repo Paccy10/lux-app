@@ -8,13 +8,11 @@ import {
 import { Avatar } from 'react-native-elements';
 import moment from 'moment';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import AppText from '../AppText';
 import PostImage from '../images/PostImage';
 import colors from '../../../config/colors';
-import { likePost } from '../../../store/actions/like';
 import routes from '../../../navigation/routes';
 
 const PostItem = ({
@@ -28,13 +26,9 @@ const PostItem = ({
   likes,
   hasLiked,
   comments,
+  onLikePost,
 }) => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const onLIkePost = (postKey) => {
-    dispatch(likePost(postKey));
-  };
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
@@ -66,7 +60,7 @@ const PostItem = ({
         </View>
         <View style={styles.buttons}>
           <View style={styles.button}>
-            <TouchableWithoutFeedback onPress={() => onLIkePost(postKey)}>
+            <TouchableWithoutFeedback onPress={onLikePost}>
               <View style={{ flexDirection: 'row' }}>
                 {hasLiked ? (
                   <MaterialCommunityIcons

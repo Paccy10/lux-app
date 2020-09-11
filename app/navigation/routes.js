@@ -15,4 +15,5 @@ export default Object.freeze({
   USER_PROFILE: 'User Profile',
   MY_FRIENDS: 'My Friends',
   CHAT: 'Chat',
+  MY_POSTS: 'My Posts',
 });

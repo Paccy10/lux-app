@@ -26,11 +26,6 @@ const DrawerContent = (props) => {
         <AppText style={styles.username}>{profile.fullname}</AppText>
       </View>
       <AppDrawerItem
-        label='Home'
-        icon='home'
-        onPress={() => navigation.navigate(routes.HOME)}
-      />
-      <AppDrawerItem
         label='New Post'
         icon='newspaper-plus'
         onPress={() => navigation.navigate(routes.NEW_POST)}
@@ -45,20 +40,16 @@ const DrawerContent = (props) => {
         icon='account-group'
         onPress={() => navigation.navigate(routes.MY_FRIENDS)}
       />
+
       <AppDrawerItem
         label='Find Friends'
         icon='account-search'
         onPress={() => navigation.navigate(routes.ALL_USERS)}
       />
       <AppDrawerItem
-        label='Messages'
-        icon='email'
-        onPress={() => navigation.navigate(routes.HOME)}
-      />
-      <AppDrawerItem
-        label='Settings'
-        icon='settings'
-        onPress={() => navigation.navigate(routes.HOME)}
+        label='My Posts'
+        icon='newspaper'
+        onPress={() => navigation.navigate(routes.MY_POSTS)}
       />
       <AppDrawerItem
         label='Logout'
