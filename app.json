@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "lux-app",
+    "name": "Lux App",
     "slug": "lux-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,7 +15,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.paccy10.lux-app"
+    },
+    "android": {
+      "package": "com.paccy10.lux_app",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
